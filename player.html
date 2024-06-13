@@ -13,7 +13,9 @@
     </header>
 
     <main>
-        <video id="videoPlayer" class="plyr" controls autoplay></video>
+        <div class="plyr__video-embed" id="player">
+            <iframe src="" allowfullscreen allowtransparency allow="autoplay"></iframe>
+        </div>
     </main>
 
     <footer>
@@ -24,7 +26,7 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const streamUrl = urlParams.get('url');
-        const player = new Plyr('#videoPlayer');
+        const player = new Plyr('#player', { captions: { active: true } });
         player.source = {
             type: 'video',
             sources: [
@@ -34,6 +36,14 @@
                 }
             ]
         };
+
+        player.on('playing', () => {
+            console.log('Video is playing');
+        });
+
+        player.on('waiting', () => {
+            console.log('Buffering...');
+        });
     </script>
 </body>
 </html>
