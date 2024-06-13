@@ -25,12 +25,25 @@
     </footer>
 
     <script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const streamUrl = urlParams.get('url');
         const player = new Plyr('#player');
 
-        document.getElementById('player').src = streamUrl;
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(streamUrl);
+            hls.attachMedia(document.getElementById('player'));
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                document.getElementById('player').play();
+            });
+        } else if (document.getElementById('player').canPlayType('application/vnd.apple.mpegurl')) {
+            document.getElementById('player').src = streamUrl;
+            document.getElementById('player').addEventListener('loadedmetadata', function() {
+                document.getElementById('player').play();
+            });
+        }
 
         player.on('playing', () => {
             console.log('Video is playing');
