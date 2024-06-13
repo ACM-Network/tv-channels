@@ -2,12 +2,18 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #f0f0f0;
 }
 
 header {
     background-color: #333;
     color: white;
     padding: 1em 0;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
 }
 
 nav ul {
@@ -25,6 +31,7 @@ nav ul li {
 nav ul li a {
     color: white;
     text-decoration: none;
+    font-weight: bold;
 }
 
 main {
@@ -36,15 +43,20 @@ section {
 }
 
 .channel {
+    background: white;
+    padding: 1em;
     margin-bottom: 1em;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 .channel img {
-    width: 100px;
-    display: block;
+    width: 150px;
+    height: auto;
 }
 
-.channel h2 {
+.channel h3 {
     margin: 0.5em 0;
 }
 
@@ -52,6 +64,7 @@ video {
     width: 100%;
     max-width: 600px;
     height: auto;
+    margin-top: 0.5em;
 }
 
 footer {
