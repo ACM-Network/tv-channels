@@ -13,8 +13,10 @@
     </header>
 
     <main>
-        <div class="plyr__video-embed" id="player">
-            <iframe src="" allowfullscreen allowtransparency allow="autoplay"></iframe>
+        <div id="playerContainer">
+            <video controls crossorigin playsinline id="player">
+                <source src="" type="application/x-mpegURL">
+            </video>
         </div>
     </main>
 
@@ -26,16 +28,9 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const streamUrl = urlParams.get('url');
-        const player = new Plyr('#player', { captions: { active: true } });
-        player.source = {
-            type: 'video',
-            sources: [
-                {
-                    src: streamUrl,
-                    type: 'application/x-mpegURL'
-                }
-            ]
-        };
+        const player = new Plyr('#player');
+
+        document.getElementById('player').src = streamUrl;
 
         player.on('playing', () => {
             console.log('Video is playing');
