@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TV Player</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,17 +13,27 @@
     </header>
 
     <main>
-        <video id="videoPlayer" controls autoplay></video>
+        <video id="videoPlayer" class="plyr" controls autoplay></video>
     </main>
 
     <footer>
         <p>My Website &copy; 2024</p>
     </footer>
 
+    <script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const streamUrl = urlParams.get('url');
-        document.getElementById('videoPlayer').src = streamUrl;
+        const player = new Plyr('#videoPlayer');
+        player.source = {
+            type: 'video',
+            sources: [
+                {
+                    src: streamUrl,
+                    type: 'application/x-mpegURL'
+                }
+            ]
+        };
     </script>
 </body>
 </html>
