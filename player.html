@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TV Player</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>TV Player</h1>
+    </header>
+
+    <main>
+        <video id="videoPlayer" controls autoplay></video>
+    </main>
+
+    <footer>
+        <p>My Website &copy; 2024</p>
+    </footer>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const streamUrl = urlParams.get('url');
+        document.getElementById('videoPlayer').src = streamUrl;
+    </script>
+</body>
+</html>
