@@ -34,13 +34,21 @@
             controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
             settings: ['quality', 'speed'],
             tooltips: { controls: false, seek: true },
-            seekTime: 0, // Prevent seeking back
             displayDuration: false, // Hide duration display
             hideControls: true // Hide controls initially to enforce 'Live' state
         });
 
         player.on('ready', () => {
             player.toggleControls(false); // Hide controls to enforce 'Live' state
+        });
+
+        player.on('play', () => {
+            const currentTime = player.currentTime;
+            if (currentTime <= 1) {
+                player.toggleControls(false); // Hide controls if video just started or seeked to beginning
+            } else {
+                player.toggleControls(true); // Show controls once playback starts
+            }
         });
 
         if (streamUrl) {
@@ -51,19 +59,16 @@
                 
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     videoElement.play();
-                    player.toggleControls(true); // Show controls once playback starts
                 });
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
                 videoElement.src = streamUrl;
                 videoElement.addEventListener('loadedmetadata', function() {
                     videoElement.play();
-                    player.toggleControls(true); // Show controls once playback starts
                 });
             } else {
                 videoElement.src = streamUrl;
                 videoElement.addEventListener('loadedmetadata', function() {
                     videoElement.play();
-                    player.toggleControls(true); // Show controls once playback starts
                 });
             }
         }
