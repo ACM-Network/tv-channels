@@ -68,3 +68,11 @@ footer {
     width: 100%;
     height: auto;
 }
+
+/* Styling for "Live" indicator */
+.plyr__live {
+    color: white;
+    background-color: red;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
