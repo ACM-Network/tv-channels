@@ -45,9 +45,9 @@
                     videoElement.play();
 
                     // Get quality levels
-                    const availableQualities = hls.levels.map((level, index) => ({
-                        label: level.height + 'p',
-                        value: index
+                    const availableQualities = hls.levels.map(level => ({
+                        label: `${level.height}p`,
+                        value: level.height
                     }));
 
                     availableQualities.unshift({ label: 'Auto', value: -1 });
@@ -55,37 +55,36 @@
                     // Set quality options in Plyr
                     player.options.quality = {
                         default: -1,
-                        options: availableQualities.map(q => q.value),
-                        onChange: e => updateQuality(e)
+                        options: availableQualities,
+                        onChange: quality => {
+                            const selectedQuality = availableQualities.find(q => q.value === quality);
+                            console.log('Selected quality:', selectedQuality.label);
+                            hls.levels.forEach((level, index) => {
+                                if (level.height === quality) {
+                                    hls.currentLevel = index;
+                                }
+                            });
+                        }
                     };
 
-                    function updateQuality(newQuality) {
-                        if (newQuality === -1) {
-                            hls.currentLevel = -1; // Auto quality
-                        } else {
-                            hls.currentLevel = newQuality;
-                        }
-                    }
-
                     // Get audio tracks
-                    const audioTracks = hls.audioTracks.map((track, index) => ({
-                        label: track.name || `Track ${index + 1}`,
-                        value: index
+                    const audioTracks = hls.audioTracks.map(track => ({
+                        label: track.name,
+                        value: track.id
                     }));
 
                     // Set audio track options in Plyr
                     player.options.audio = {
-                        options: audioTracks.map(a => a.value),
-                        onChange: e => updateAudioTrack(e)
+                        options: audioTracks,
+                        onChange: audioTrack => {
+                            console.log('Selected audio track:', audioTracks.find(a => a.value === audioTrack).label);
+                            hls.audioTrack = audioTrack;
+                        }
                     };
-
-                    function updateAudioTrack(newAudioTrack) {
-                        hls.audioTrack = newAudioTrack;
-                    }
                 });
 
                 hls.on(Hls.Events.LEVEL_SWITCHED, function(event, data) {
-                    player.quality = data.level;
+                    player.quality = data.level.height;
                 });
 
                 hls.on(Hls.Events.AUDIO_TRACK_SWITCHED, function(event, data) {
@@ -93,19 +92,18 @@
                 });
 
                 hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, function(event, data) {
-                    if (data.audioTracks.length > 0) {
-                        const audioOptions = data.audioTracks.map((track, index) => ({
-                            label: track.name || `Track ${index + 1}`,
-                            value: index
-                        }));
+                    const newAudioTracks = data.audioTracks.map(track => ({
+                        label: track.name,
+                        value: track.id
+                    }));
 
-                        player.options.audio = {
-                            options: audioOptions.map(a => a.value),
-                            onChange: function (e) {
-                                hls.audioTrack = parseInt(e);
-                            }
-                        };
-                    }
+                    player.options.audio = {
+                        options: newAudioTracks,
+                        onChange: audioTrack => {
+                            console.log('Selected audio track:', newAudioTracks.find(a => a.value === audioTrack).label);
+                            hls.audioTrack = audioTrack;
+                        }
+                    };
                 });
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
                 videoElement.src = streamUrl;
