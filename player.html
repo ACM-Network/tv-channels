@@ -51,10 +51,12 @@
 
                     availableQualities.unshift({ label: 'Auto', value: -1 });
 
-                    player.quality = {
+                    // Set quality options in Plyr
+                    player.options.quality = {
                         default: -1,
                         options: availableQualities.map(q => q.value),
-                        onChange: updateQuality
+                        forced: true,
+                        onChange: e => updateQuality(e)
                     };
 
                     function updateQuality(newQuality) {
@@ -71,14 +73,40 @@
                         value: index
                     }));
 
-                    player.audio = {
+                    // Set audio track options in Plyr
+                    player.options.audio = {
                         options: audioTracks.map(a => a.value),
-                        onChange: updateAudioTrack
+                        onChange: e => updateAudioTrack(e)
                     };
 
                     function updateAudioTrack(newAudioTrack) {
                         hls.audioTrack = newAudioTrack;
                     }
+
+                    // Update Plyr settings menu with quality and audio track options
+                    player.config.controls = ['play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'];
+
+                    // Add quality and audio track settings to Plyr
+                    const settingsMenu = player.elements.settings.panels[0];
+                    const qualityOptions = availableQualities.map(q => `<button type="button" class="plyr__control" data-plyr="quality" value="${q.value}">${q.label}</button>`).join('');
+                    const audioOptions = audioTracks.map(a => `<button type="button" class="plyr__control" data-plyr="audio" value="${a.value}">${a.label}</button>`).join('');
+
+                    settingsMenu.innerHTML += `
+                        <div class="plyr__menu__container" data-plyr="quality">
+                            ${qualityOptions}
+                        </div>
+                        <div class="plyr__menu__container" data-plyr="audio">
+                            ${audioOptions}
+                        </div>
+                    `;
+                });
+
+                hls.on(Hls.Events.LEVEL_SWITCHED, function(event, data) {
+                    player.quality = data.level;
+                });
+
+                hls.on(Hls.Events.AUDIO_TRACK_SWITCHED, function(event, data) {
+                    player.audio = data.id;
                 });
 
                 hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, function(event, data) {
@@ -88,7 +116,7 @@
                             value: index
                         }));
 
-                        player.audio = {
+                        player.options.audio = {
                             options: audioOptions.map(a => a.value),
                             onChange: function (e) {
                                 hls.audioTrack = parseInt(e);
@@ -96,15 +124,6 @@
                         };
                     }
                 });
-
-                player.on('qualitychange', function(event) {
-                    updateQuality(event.detail.quality);
-                });
-
-                player.on('audiochange', function(event) {
-                    updateAudioTrack(event.detail.audio);
-                });
-
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
                 videoElement.src = streamUrl;
                 videoElement.addEventListener('loadedmetadata', function() {
