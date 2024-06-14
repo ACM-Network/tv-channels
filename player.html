@@ -31,8 +31,8 @@
         const streamUrl = urlParams.get('url');
         const videoElement = document.getElementById('player');
         const player = new Plyr(videoElement, {
-            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
-            settings: ['quality', 'speed', 'audio']
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+            settings: []
         });
 
         if (streamUrl) {
@@ -40,70 +40,9 @@
                 const hls = new Hls();
                 hls.loadSource(streamUrl);
                 hls.attachMedia(videoElement);
-
+                
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     videoElement.play();
-
-                    // Get quality levels
-                    const availableQualities = hls.levels.map(level => ({
-                        label: `${level.height}p`,
-                        value: level.height
-                    }));
-
-                    availableQualities.unshift({ label: 'Auto', value: -1 });
-
-                    // Set quality options in Plyr
-                    player.options.quality = {
-                        default: -1,
-                        options: availableQualities,
-                        onChange: quality => {
-                            const selectedQuality = availableQualities.find(q => q.value === quality);
-                            console.log('Selected quality:', selectedQuality.label);
-                            hls.levels.forEach((level, index) => {
-                                if (level.height === quality) {
-                                    hls.currentLevel = index;
-                                }
-                            });
-                        }
-                    };
-
-                    // Get audio tracks
-                    const audioTracks = hls.audioTracks.map(track => ({
-                        label: track.name,
-                        value: track.id
-                    }));
-
-                    // Set audio track options in Plyr
-                    player.options.audio = {
-                        options: audioTracks,
-                        onChange: audioTrack => {
-                            console.log('Selected audio track:', audioTracks.find(a => a.value === audioTrack).label);
-                            hls.audioTrack = audioTrack;
-                        }
-                    };
-                });
-
-                hls.on(Hls.Events.LEVEL_SWITCHED, function(event, data) {
-                    player.quality = data.level.height;
-                });
-
-                hls.on(Hls.Events.AUDIO_TRACK_SWITCHED, function(event, data) {
-                    player.audio = data.id;
-                });
-
-                hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, function(event, data) {
-                    const newAudioTracks = data.audioTracks.map(track => ({
-                        label: track.name,
-                        value: track.id
-                    }));
-
-                    player.options.audio = {
-                        options: newAudioTracks,
-                        onChange: audioTrack => {
-                            console.log('Selected audio track:', newAudioTracks.find(a => a.value === audioTrack).label);
-                            hls.audioTrack = audioTrack;
-                        }
-                    };
                 });
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
                 videoElement.src = streamUrl;
