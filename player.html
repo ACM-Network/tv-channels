@@ -30,19 +30,27 @@
         const urlParams = new URLSearchParams(window.location.search);
         const streamUrl = urlParams.get('url');
         const player = new Plyr('#player');
+        const videoElement = document.getElementById('player');
 
-        if (Hls.isSupported()) {
-            const hls = new Hls();
-            hls.loadSource(streamUrl);
-            hls.attachMedia(document.getElementById('player'));
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                document.getElementById('player').play();
-            });
-        } else if (document.getElementById('player').canPlayType('application/vnd.apple.mpegurl')) {
-            document.getElementById('player').src = streamUrl;
-            document.getElementById('player').addEventListener('loadedmetadata', function() {
-                document.getElementById('player').play();
-            });
+        if (streamUrl) {
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(streamUrl);
+                hls.attachMedia(videoElement);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    videoElement.play();
+                });
+            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play();
+                });
+            } else {
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play();
+                });
+            }
         }
 
         player.on('playing', () => {
