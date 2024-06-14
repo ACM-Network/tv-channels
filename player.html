@@ -17,6 +17,10 @@
             <video controls crossorigin playsinline id="player">
                 <source src="" type="application/x-mpegURL">
             </video>
+            <div id="audioTrackContainer">
+                <label for="audioTracks">Audio Track: </label>
+                <select id="audioTracks"></select>
+            </div>
         </div>
     </main>
 
@@ -31,6 +35,10 @@
         const streamUrl = urlParams.get('url');
         const player = new Plyr('#player');
         const videoElement = document.getElementById('player');
+        const audioTracksSelect = document.getElementById('audioTracks');
+        const audioTrackContainer = document.getElementById('audioTrackContainer');
+
+        audioTrackContainer.style.display = 'none';
 
         if (streamUrl) {
             if (Hls.isSupported()) {
@@ -40,6 +48,24 @@
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     videoElement.play();
                 });
+
+                hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, function(event, data) {
+                    if (data.audioTracks.length > 0) {
+                        audioTracksSelect.innerHTML = '';
+                        audioTrackContainer.style.display = 'block';
+                        data.audioTracks.forEach((track, index) => {
+                            const option = document.createElement('option');
+                            option.value = index;
+                            option.text = track.name || `Track ${index + 1}`;
+                            audioTracksSelect.appendChild(option);
+                        });
+                    }
+                });
+
+                audioTracksSelect.addEventListener('change', function() {
+                    hls.audioTrack = parseInt(this.value);
+                });
+
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
                 videoElement.src = streamUrl;
                 videoElement.addEventListener('loadedmetadata', function() {
