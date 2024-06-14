@@ -41,6 +41,9 @@
                 hls.attachMedia(videoElement);
 
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    videoElement.play();
+
+                    // Get quality levels
                     const availableQualities = hls.levels.map((level, index) => ({
                         label: level.height + 'p',
                         value: index
@@ -48,11 +51,10 @@
 
                     availableQualities.unshift({ label: 'Auto', value: -1 });
 
-                    player.options.quality = {
+                    player.quality = {
                         default: -1,
-                        options: availableQualities,
-                        forced: true,
-                        onChange: e => updateQuality(e)
+                        options: availableQualities.map(q => q.value),
+                        onChange: updateQuality
                     };
 
                     function updateQuality(newQuality) {
@@ -63,32 +65,20 @@
                         }
                     }
 
+                    // Get audio tracks
                     const audioTracks = hls.audioTracks.map((track, index) => ({
                         label: track.name || `Track ${index + 1}`,
                         value: index
                     }));
 
-                    player.options.audio = {
-                        options: audioTracks,
-                        onChange: e => updateAudioTrack(e)
+                    player.audio = {
+                        options: audioTracks.map(a => a.value),
+                        onChange: updateAudioTrack
                     };
 
                     function updateAudioTrack(newAudioTrack) {
                         hls.audioTrack = newAudioTrack;
                     }
-
-                    player.settings['quality'] = availableQualities.map(q => q.label);
-                    player.settings['audio'] = audioTracks.map(a => a.label);
-
-                    player.config.controls = ['play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'];
-                });
-
-                hls.on(Hls.Events.LEVEL_SWITCHED, function(event, data) {
-                    player.quality = data.level;
-                });
-
-                hls.on(Hls.Events.AUDIO_TRACK_SWITCHED, function(event, data) {
-                    player.audio = data.id;
                 });
 
                 hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, function(event, data) {
@@ -98,14 +88,23 @@
                             value: index
                         }));
 
-                        player.options.audio = {
-                            options: audioOptions,
-                            onChange: e => hls.audioTrack = parseInt(e)
+                        player.audio = {
+                            options: audioOptions.map(a => a.value),
+                            onChange: function (e) {
+                                hls.audioTrack = parseInt(e);
+                            }
                         };
-
-                        player.settings['audio'] = audioOptions.map(a => a.label);
                     }
                 });
+
+                player.on('qualitychange', function(event) {
+                    updateQuality(event.detail.quality);
+                });
+
+                player.on('audiochange', function(event) {
+                    updateAudioTrack(event.detail.audio);
+                });
+
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
                 videoElement.src = streamUrl;
                 videoElement.addEventListener('loadedmetadata', function() {
