@@ -31,8 +31,9 @@
         const streamUrl = urlParams.get('url');
         const videoElement = document.getElementById('player');
         const player = new Plyr(videoElement, {
-            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-            settings: []
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+            settings: ['quality', 'speed'],
+            tooltips: { controls: false, seek: true }
         });
 
         if (streamUrl) {
