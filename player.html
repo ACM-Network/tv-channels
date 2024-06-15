@@ -4,126 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Network</title>
-    <style>
-        /* Basic styling for the video player */
-        #video-container {
-            position: relative;
-            width: 640px;
-            margin: auto;
-        }
-        video {
-            width: 100%;
-        }
-        #controls {
-            position: absolute;
-            bottom: 10px;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-        }
-        .button {
-            padding: 10px;
-            cursor: pointer;
-        }
-        #live-button {
-            background: red;
-            border-radius: 50%;
-        }
-        #settings {
-            position: relative;
-        }
-        #settings-menu {
-            display: none;
-            position: absolute;
-            top: -100px;
-            right: 0;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 10px;
-        }
-        #settings-menu select {
-            color: black;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="video-container">
-        <video id="video" controls>
-            <source src="video-1080p.mp4" type="video/mp4" label="1080p">
-            <source src="video-720p.mp4" type="video/mp4" label="720p">
-            <track src="audio-en.vtt" kind="subtitles" srclang="en" label="English">
-            <track src="audio-es.vtt" kind="subtitles" srclang="es" label="Spanish">
-        </video>
-        <div id="controls">
-            <div id="live-button" class="button">LIVE</div>
-            <div id="settings" class="button">Settings
-                <div id="settings-menu">
-                    <div>
-                        <label for="quality-select">Quality:</label>
-                        <select id="quality-select">
-                            <option value="1080p">1080p</option>
-                            <option value="720p">720p</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="audio-select">Audio Track:</label>
-                        <select id="audio-select">
-                            <option value="en">English</option>
-                            <option value="es">Spanish</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+    <header>
+        <h1>ACM Network</h1>
+    </header>
+
+    <main>
+        <div id="playerContainer">
+            <video controls crossorigin playsinline id="player">
+                <source src="" type="application/x-mpegURL">
+            </video>
         </div>
-    </div>
+        <div id="liveIndicator" style="display: none;">
+            <button onclick="goToLive()">Not Live</button>
+        </div>
+    </main>
 
+    <footer>
+        <p>ACM Network &copy; 2024</p>
+    </footer>
+
+    <script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
-        const video = document.getElementById('video');
-        const liveButton = document.getElementById('live-button');
-        const settingsButton = document.getElementById('settings');
-        const settingsMenu = document.getElementById('settings-menu');
-        const qualitySelect = document.getElementById('quality-select');
-        const audioSelect = document.getElementById('audio-select');
-
-        liveButton.addEventListener('click', () => {
-            video.currentTime = video.duration;
+        const urlParams = new URLSearchParams(window.location.search);
+        const streamUrl = urlParams.get('url');
+        const videoElement = document.getElementById('player');
+        const liveIndicator = document.getElementById('liveIndicator');
+        const player = new Plyr(videoElement, {
+            controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
+            settings: ['quality', 'speed', 'audio track'],
+            tooltips: { controls: false, seek: true },
+            displayDuration: false // Hide duration display
         });
 
-        settingsButton.addEventListener('click', () => {
-            settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
-        });
-
-        qualitySelect.addEventListener('change', () => {
-            const selectedQuality = qualitySelect.value;
-            const sources = video.querySelectorAll('source');
-            sources.forEach(source => {
-                if (source.getAttribute('label') === selectedQuality) {
-                    video.src = source.getAttribute('src');
-                }
-            });
-            video.load();
-            video.play();
-        });
-
-        audioSelect.addEventListener('change', () => {
-            const selectedAudio = audioSelect.value;
-            const tracks = video.querySelectorAll('track');
-            tracks.forEach(track => {
-                if (track.getAttribute('srclang') === selectedAudio) {
-                    track.mode = 'showing';
-                } else {
-                    track.mode = 'hidden';
-                }
-            });
-        });
-
-        video.addEventListener('timeupdate', () => {
-            if (video.currentTime >= video.duration - 10) {
-                liveButton.style.background = 'gray';
-            } else {
-                liveButton.style.background = 'red';
+        player.on('play', () => {
+            const currentTime = player.currentTime;
+            if (currentTime <= 1) {
+                checkLiveStatus();
             }
+        });
+
+        function checkLiveStatus() {
+            if (videoElement.duration === Infinity) {
+                showLiveIndicator(true); // Live stream
+            } else {
+                showLiveIndicator(false); // VOD or not live
+            }
+        }
+
+        function showLiveIndicator(isLive) {
+            if (isLive) {
+                liveIndicator.style.display = 'none'; // Hide 'Not Live' button if already live
+            } else {
+                liveIndicator.style.display = 'block'; // Show 'Not Live' button if not live
+            }
+        }
+
+        function goToLive() {
+            videoElement.currentTime = videoElement.duration; // Jump to live position
+            liveIndicator.style.display = 'none'; // Hide the 'Not Live' button after jumping to live
+        }
+
+        if (streamUrl) {
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(streamUrl);
+                hls.attachMedia(videoElement);
+                
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    videoElement.play();
+                    checkLiveStatus();
+                });
+            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play();
+                    checkLiveStatus();
+                });
+            } else {
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play();
+                    checkLiveStatus();
+                });
+            }
+        }
+
+        player.on('playing', () => {
+            console.log('Video is playing');
+        });
+
+        player.on('waiting', () => {
+            console.log('Buffering...');
         });
     </script>
 </body>
