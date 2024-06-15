@@ -3,29 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ACM Network</title>
+    <title>TV Player</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css">
     <link rel="stylesheet" href="styles.css">
     <style>
         .plyr__controls {
             justify-content: space-between;
         }
-        .plyr__controls__item.plyr__time--current {
-            display: none;
+        .plyr__time--current {
+            display: none !important;
         }
-        .live-indicator {
+        .plyr__time--duration {
+            display: none !important;
+        }
+        .live-indicator,
+        .not-live-indicator {
+            position: absolute;
+            top: 10px;
+            left: 10px;
             color: white;
             background-color: red;
             padding: 2px 5px;
             border-radius: 3px;
-            margin-left: 10px;
         }
         .not-live-indicator {
-            color: white;
             background-color: grey;
-            padding: 2px 5px;
-            border-radius: 3px;
-            margin-left: 10px;
             cursor: pointer;
         }
     </style>
@@ -40,9 +42,9 @@
             <video controls crossorigin playsinline id="player">
                 <source src="" type="application/x-mpegURL">
             </video>
+            <div id="liveIndicator" class="live-indicator" style="display: none;">LIVE</div>
+            <div id="notLiveIndicator" class="not-live-indicator" style="display: none;" onclick="goToLive()">NOT LIVE</div>
         </div>
-        <div id="liveIndicator" class="live-indicator" style="display: none;">LIVE</div>
-        <div id="notLiveIndicator" class="not-live-indicator" style="display: none;" onclick="goToLive()">NOT LIVE</div>
     </main>
 
     <footer>
@@ -64,23 +66,11 @@
             displayDuration: false, // Hide duration display
         });
 
-        player.on('ready', () => {
-            checkLiveStatus();
-        });
-
-        player.on('timeupdate', () => {
-            checkLiveStatus();
-        });
-
         function checkLiveStatus() {
-            if (videoElement.duration === Infinity) {
-                showLiveIndicator(true); // Live stream
-            } else {
-                const bufferEnd = player.buffered.end(0);
-                const duration = videoElement.duration;
-                const isLive = duration - bufferEnd < 10; // Within 10 seconds of live
-                showLiveIndicator(isLive);
-            }
+            const bufferEnd = player.buffered.end(0);
+            const duration = videoElement.duration;
+            const isLive = duration === Infinity || duration - bufferEnd < 10; // Within 10 seconds of live
+            showLiveIndicator(isLive);
         }
 
         function showLiveIndicator(isLive) {
@@ -93,12 +83,14 @@
             showLiveIndicator(true);
         }
 
+        player.on('ready', checkLiveStatus);
+        player.on('timeupdate', checkLiveStatus);
+
         if (streamUrl) {
             if (Hls.isSupported()) {
                 const hls = new Hls();
                 hls.loadSource(streamUrl);
                 hls.attachMedia(videoElement);
-                
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     videoElement.play();
                     checkLiveStatus();
@@ -117,15 +109,6 @@
                 });
             }
         }
-
-        player.on('playing', () => {
-            console.log('Video is playing');
-        });
-
-        player.on('waiting', () => {
-            console.log('Buffering...');
-        });
-
     </script>
 </body>
 </html>
