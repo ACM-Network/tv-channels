@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TV Player</title>
+    <title>ACM Network</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -19,7 +19,7 @@
             </video>
         </div>
         <div id="liveIndicator" style="display: none;">
-            <button onclick="goToLive()">Not Live - Go to Live</button>
+            <button onclick="goToLive()">Not Live</button>
         </div>
     </main>
 
@@ -36,7 +36,7 @@
         const liveIndicator = document.getElementById('liveIndicator');
         const player = new Plyr(videoElement, {
             controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
-            settings: ['quality', 'speed'],
+            settings: ['quality', 'speed', 'audio track'],
             tooltips: { controls: false, seek: true },
             displayDuration: false // Hide duration display
         });
