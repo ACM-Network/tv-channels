@@ -20,6 +20,14 @@
             border-radius: 3px;
             margin-left: 10px;
         }
+        .not-live-indicator {
+            color: white;
+            background-color: grey;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -34,6 +42,7 @@
             </video>
         </div>
         <div id="liveIndicator" class="live-indicator" style="display: none;">LIVE</div>
+        <div id="notLiveIndicator" class="not-live-indicator" style="display: none;" onclick="goToLive()">NOT LIVE</div>
     </main>
 
     <footer>
@@ -47,8 +56,9 @@
         const streamUrl = urlParams.get('url');
         const videoElement = document.getElementById('player');
         const liveIndicator = document.getElementById('liveIndicator');
+        const notLiveIndicator = document.getElementById('notLiveIndicator');
         const player = new Plyr(videoElement, {
-            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'],
+            controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'],
             settings: ['quality', 'speed'],
             tooltips: { controls: true, seek: true },
             displayDuration: false, // Hide duration display
@@ -75,10 +85,12 @@
 
         function showLiveIndicator(isLive) {
             liveIndicator.style.display = isLive ? 'block' : 'none';
+            notLiveIndicator.style.display = isLive ? 'none' : 'block';
         }
 
         function goToLive() {
             videoElement.currentTime = videoElement.duration; // Jump to live position
+            showLiveIndicator(true);
         }
 
         if (streamUrl) {
