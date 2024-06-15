@@ -6,30 +6,6 @@
     <title>TV Player</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css">
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .plyr__controls {
-            justify-content: space-between;
-        }
-        .plyr__time--current,
-        .plyr__time--duration {
-            display: none !important;
-        }
-        .live-indicator,
-        .not-live-indicator {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
-            background-color: red;
-            padding: 2px 5px;
-            border-radius: 3px;
-            z-index: 10;
-        }
-        .not-live-indicator {
-            background-color: grey;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -41,7 +17,9 @@
             <video controls crossorigin playsinline id="player">
                 <source src="" type="application/x-mpegURL">
             </video>
-            <div id="liveIndicator" class="live-indicator">LIVE</div>
+        </div>
+        <div id="liveIndicator" style="display: none;">
+            <button onclick="goToLive()">Not Live - Go to Live</button>
         </div>
     </main>
 
@@ -57,57 +35,49 @@
         const videoElement = document.getElementById('player');
         const liveIndicator = document.getElementById('liveIndicator');
         const player = new Plyr(videoElement, {
-            controls: ['play-large', 'play', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'],
+            controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
             settings: ['quality', 'speed'],
-            tooltips: { controls: true, seek: true },
-            displayDuration: false, // Hide duration display
+            tooltips: { controls: false, seek: true },
+            displayDuration: false // Hide duration display
+        });
+
+        player.on('play', () => {
+            const currentTime = player.currentTime;
+            if (currentTime <= 1) {
+                checkLiveStatus();
+            }
         });
 
         function checkLiveStatus() {
-            const isLive = videoElement.currentTime >= (videoElement.duration - 10); // Within 10 seconds of live
-            showLiveIndicator(isLive);
-        }
-
-        function showLiveIndicator(isLive) {
-            liveIndicator.style.display = isLive ? 'block' : 'none';
-            videoElement.controls = isLive ? true : false;
-        }
-
-        function preventSeek(event) {
-            if (event.detail.plyr.currentTime < event.detail.plyr.duration - 10) {
-                event.detail.plyr.currentTime = event.detail.plyr.duration - 10;
+            if (videoElement.duration === Infinity) {
+                showLiveIndicator(true); // Live stream
+            } else {
+                showLiveIndicator(false); // VOD or not live
             }
         }
 
-        player.on('ready', checkLiveStatus);
-        player.on('timeupdate', checkLiveStatus);
-        player.on('seek', preventSeek);
+        function showLiveIndicator(isLive) {
+            if (isLive) {
+                liveIndicator.style.display = 'none'; // Hide 'Not Live' button if already live
+            } else {
+                liveIndicator.style.display = 'block'; // Show 'Not Live' button if not live
+            }
+        }
+
+        function goToLive() {
+            videoElement.currentTime = videoElement.duration; // Jump to live position
+            liveIndicator.style.display = 'none'; // Hide the 'Not Live' button after jumping to live
+        }
 
         if (streamUrl) {
             if (Hls.isSupported()) {
                 const hls = new Hls();
                 hls.loadSource(streamUrl);
                 hls.attachMedia(videoElement);
+                
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     videoElement.play();
                     checkLiveStatus();
-                });
-                hls.on(Hls.Events.ERROR, function(event, data) {
-                    if (data.fatal) {
-                        switch (data.type) {
-                            case Hls.ErrorTypes.NETWORK_ERROR:
-                                console.error("Network error occurred:", data);
-                                hls.startLoad();
-                                break;
-                            case Hls.ErrorTypes.MEDIA_ERROR:
-                                console.error("Media error occurred:", data);
-                                hls.recoverMediaError();
-                                break;
-                            default:
-                                hls.destroy();
-                                break;
-                        }
-                    }
                 });
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
                 videoElement.src = streamUrl;
@@ -123,6 +93,14 @@
                 });
             }
         }
+
+        player.on('playing', () => {
+            console.log('Video is playing');
+        });
+
+        player.on('waiting', () => {
+            console.log('Buffering...');
+        });
     </script>
 </body>
 </html>
