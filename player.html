@@ -10,9 +10,7 @@
         .plyr__controls {
             justify-content: space-between;
         }
-        .plyr__time--current {
-            display: none !important;
-        }
+        .plyr__time--current,
         .plyr__time--duration {
             display: none !important;
         }
@@ -25,6 +23,7 @@
             background-color: red;
             padding: 2px 5px;
             border-radius: 3px;
+            z-index: 10;
         }
         .not-live-indicator {
             background-color: grey;
@@ -60,7 +59,7 @@
         const liveIndicator = document.getElementById('liveIndicator');
         const notLiveIndicator = document.getElementById('notLiveIndicator');
         const player = new Plyr(videoElement, {
-            controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'],
+            controls: ['play-large', 'play', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'],
             settings: ['quality', 'speed'],
             tooltips: { controls: true, seek: true },
             displayDuration: false, // Hide duration display
@@ -69,7 +68,7 @@
         function checkLiveStatus() {
             const bufferEnd = player.buffered.end(0);
             const duration = videoElement.duration;
-            const isLive = duration === Infinity || duration - bufferEnd < 10; // Within 10 seconds of live
+            const isLive = duration === Infinity || Math.abs(duration - bufferEnd) < 10; // Within 10 seconds of live
             showLiveIndicator(isLive);
         }
 
@@ -94,6 +93,23 @@
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     videoElement.play();
                     checkLiveStatus();
+                });
+                hls.on(Hls.Events.ERROR, function(event, data) {
+                    if (data.fatal) {
+                        switch (data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                console.error("Network error occurred:", data);
+                                hls.startLoad();
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                console.error("Media error occurred:", data);
+                                hls.recoverMediaError();
+                                break;
+                            default:
+                                hls.destroy();
+                                break;
+                        }
+                    }
                 });
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
                 videoElement.src = streamUrl;
