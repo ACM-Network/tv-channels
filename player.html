@@ -41,8 +41,7 @@
             <video controls crossorigin playsinline id="player">
                 <source src="" type="application/x-mpegURL">
             </video>
-            <div id="liveIndicator" class="live-indicator" style="display: none;">LIVE</div>
-            <div id="notLiveIndicator" class="not-live-indicator" style="display: none;" onclick="goToLive()">NOT LIVE</div>
+            <div id="liveIndicator" class="live-indicator">LIVE</div>
         </div>
     </main>
 
@@ -57,7 +56,6 @@
         const streamUrl = urlParams.get('url');
         const videoElement = document.getElementById('player');
         const liveIndicator = document.getElementById('liveIndicator');
-        const notLiveIndicator = document.getElementById('notLiveIndicator');
         const player = new Plyr(videoElement, {
             controls: ['play-large', 'play', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'],
             settings: ['quality', 'speed'],
@@ -66,24 +64,24 @@
         });
 
         function checkLiveStatus() {
-            const bufferEnd = player.buffered.end(0);
-            const duration = videoElement.duration;
-            const isLive = duration === Infinity || Math.abs(duration - bufferEnd) < 10; // Within 10 seconds of live
+            const isLive = videoElement.currentTime >= (videoElement.duration - 10); // Within 10 seconds of live
             showLiveIndicator(isLive);
         }
 
         function showLiveIndicator(isLive) {
             liveIndicator.style.display = isLive ? 'block' : 'none';
-            notLiveIndicator.style.display = isLive ? 'none' : 'block';
+            videoElement.controls = isLive ? true : false;
         }
 
-        function goToLive() {
-            videoElement.currentTime = videoElement.duration; // Jump to live position
-            showLiveIndicator(true);
+        function preventSeek(event) {
+            if (event.detail.plyr.currentTime < event.detail.plyr.duration - 10) {
+                event.detail.plyr.currentTime = event.detail.plyr.duration - 10;
+            }
         }
 
         player.on('ready', checkLiveStatus);
         player.on('timeupdate', checkLiveStatus);
+        player.on('seek', preventSeek);
 
         if (streamUrl) {
             if (Hls.isSupported()) {
