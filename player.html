@@ -6,6 +6,21 @@
     <title>TV Player</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .plyr__controls {
+            justify-content: space-between;
+        }
+        .plyr__controls__item.plyr__time--current {
+            display: none;
+        }
+        .live-indicator {
+            color: white;
+            background-color: red;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -18,9 +33,7 @@
                 <source src="" type="application/x-mpegURL">
             </video>
         </div>
-        <div id="liveIndicator" style="display: none;">
-            <button onclick="goToLive()">Not Live - Go to Live</button>
-        </div>
+        <div id="liveIndicator" class="live-indicator" style="display: none;">LIVE</div>
     </main>
 
     <footer>
@@ -35,38 +48,37 @@
         const videoElement = document.getElementById('player');
         const liveIndicator = document.getElementById('liveIndicator');
         const player = new Plyr(videoElement, {
-            controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'],
             settings: ['quality', 'speed'],
-            tooltips: { controls: false, seek: true },
-            displayDuration: false // Hide duration display
+            tooltips: { controls: true, seek: true },
+            displayDuration: false, // Hide duration display
         });
 
-        player.on('play', () => {
-            const currentTime = player.currentTime;
-            if (currentTime <= 1) {
-                checkLiveStatus();
-            }
+        player.on('ready', () => {
+            checkLiveStatus();
+        });
+
+        player.on('timeupdate', () => {
+            checkLiveStatus();
         });
 
         function checkLiveStatus() {
             if (videoElement.duration === Infinity) {
                 showLiveIndicator(true); // Live stream
             } else {
-                showLiveIndicator(false); // VOD or not live
+                const bufferEnd = player.buffered.end(0);
+                const duration = videoElement.duration;
+                const isLive = duration - bufferEnd < 10; // Within 10 seconds of live
+                showLiveIndicator(isLive);
             }
         }
 
         function showLiveIndicator(isLive) {
-            if (isLive) {
-                liveIndicator.style.display = 'none'; // Hide 'Not Live' button if already live
-            } else {
-                liveIndicator.style.display = 'block'; // Show 'Not Live' button if not live
-            }
+            liveIndicator.style.display = isLive ? 'block' : 'none';
         }
 
         function goToLive() {
             videoElement.currentTime = videoElement.duration; // Jump to live position
-            liveIndicator.style.display = 'none'; // Hide the 'Not Live' button after jumping to live
         }
 
         if (streamUrl) {
@@ -101,6 +113,7 @@
         player.on('waiting', () => {
             console.log('Buffering...');
         });
+
     </script>
 </body>
 </html>
