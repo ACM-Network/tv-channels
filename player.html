@@ -15,18 +15,11 @@
     <main>
         <div id="playerContainer">
             <video controls crossorigin playsinline id="player">
-                <!-- MP4 -->
-                <source src="" type="video/mp4">
-                <!-- MKV -->
-                <source src="" type="video/x-matroska">
-                <!-- MP3 (audio) -->
-                <source src="" type="audio/mpeg">
-                <!-- HLS (M3U8) -->
                 <source src="" type="application/x-mpegURL">
-                <!-- M3U (plain text playlist) -->
-                <source src="" type="application/vnd.apple.mpegurl">
-                <!-- Additional formats can be added as needed -->
             </video>
+        </div>
+        <div id="liveIndicator" style="display: none;">
+            <button onclick="goToLive()">Not Live</button>
         </div>
     </main>
 
@@ -35,41 +28,69 @@
     </footer>
 
     <script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const streamUrl = urlParams.get('url');
         const videoElement = document.getElementById('player');
+        const liveIndicator = document.getElementById('liveIndicator');
         const player = new Plyr(videoElement, {
             controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
             settings: ['quality', 'speed', 'audio track'],
             tooltips: { controls: false, seek: true },
-            displayDuration: false
+            displayDuration: false // Hide duration display
         });
 
-        if (streamUrl) {
-            // Check for supported video formats and load appropriate source
-            if (streamUrl.endsWith('.mp4')) {
-                videoElement.src = streamUrl;
-            } else if (streamUrl.endsWith('.mkv')) {
-                videoElement.src = streamUrl;
-            } else if (streamUrl.endsWith('.mp3')) {
-                videoElement.src = streamUrl;
-            } else if (streamUrl.endsWith('.m3u8')) {
-                if (Hls.isSupported()) {
-                    const hls = new Hls();
-                    hls.loadSource(streamUrl);
-                    hls.attachMedia(videoElement);
-                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                        videoElement.play();
-                    });
-                } else {
-                    console.error('HLS.js is not supported, cannot play HLS stream.');
-                }
-            } else if (streamUrl.endsWith('.m3u')) {
-                // Handle plain text playlist (M3U)
-                videoElement.src = streamUrl;
+        player.on('play', () => {
+            const currentTime = player.currentTime;
+            if (currentTime <= 1) {
+                checkLiveStatus();
+            }
+        });
+
+        function checkLiveStatus() {
+            if (videoElement.duration === Infinity) {
+                showLiveIndicator(true); // Live stream
             } else {
-                console.error('Unsupported format or invalid stream URL.');
+                showLiveIndicator(false); // VOD or not live
+            }
+        }
+
+        function showLiveIndicator(isLive) {
+            if (isLive) {
+                liveIndicator.style.display = 'none'; // Hide 'Not Live' button if already live
+            } else {
+                liveIndicator.style.display = 'block'; // Show 'Not Live' button if not live
+            }
+        }
+
+        function goToLive() {
+            videoElement.currentTime = videoElement.duration; // Jump to live position
+            liveIndicator.style.display = 'none'; // Hide the 'Not Live' button after jumping to live
+        }
+
+        if (streamUrl) {
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(streamUrl);
+                hls.attachMedia(videoElement);
+                
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    videoElement.play();
+                    checkLiveStatus();
+                });
+            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play();
+                    checkLiveStatus();
+                });
+            } else {
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play();
+                    checkLiveStatus();
+                });
             }
         }
 
