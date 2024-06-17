@@ -21,7 +21,7 @@
                 <button id="play-pause" class="control-btn"><span id="play-icon">►</span><span id="pause-icon">❚❚</span></button>
                 <span id="live-indicator">• LIVE</span>
                 <input type="range" id="progress-bar" value="0" min="0" max="100">
-                <button id="mute-unmute" class="control-btn"><span id="mute-icon">🔈</span><span id="unmute-icon">🔇</span></button>
+                <button id="mute-unmute" class="control-btn"><span id="mute-icon">🔊</span><span id="unmute-icon">🔇</span></button>
                 <button id="pip" class="control-btn">PIP</button>
                 <button id="fullscreen" class="control-btn">⤢</button>
             </div>
@@ -62,7 +62,8 @@
         }
 
         const player = new Plyr(videoElement, {
-            controls: [],
+            controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
+            settings: ['quality', 'speed', 'audio track'],
             tooltips: { controls: false, seek: true },
             displayDuration: false // Hide duration display
         });
