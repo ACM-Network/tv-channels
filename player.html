@@ -18,7 +18,6 @@
                 <source src="" type="application/x-mpegURL">
             </video>
         </div>
-        
     </main>
 
     <footer>
@@ -31,41 +30,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const streamUrl = urlParams.get('url');
         const videoElement = document.getElementById('player');
-        const liveIndicator = document.getElementById('liveIndicator');
-        const player = new Plyr(videoElement, {
-            controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
-            settings: ['quality', 'speed', 'audio track'],
-            tooltips: { controls: false, seek: true },
-            displayDuration: false // Hide duration display
-        });
-
-        player.on('play', () => {
-            const currentTime = player.currentTime;
-            if (currentTime <= 1) {
-                checkLiveStatus();
-            }
-        });
-
-        function checkLiveStatus() {
-            if (videoElement.duration === Infinity) {
-                showLiveIndicator(true); // Live stream
-            } else {
-                showLiveIndicator(false); // VOD or not live
-            }
-        }
-
-        function showLiveIndicator(isLive) {
-            if (isLive) {
-                liveIndicator.style.display = 'none'; // Hide 'Not Live' button if already live
-            } else {
-                liveIndicator.style.display = 'block'; // Show 'Not Live' button if not live
-            }
-        }
-
-        function goToLive() {
-            videoElement.currentTime = videoElement.duration; // Jump to live position
-            liveIndicator.style.display = 'none'; // Hide the 'Not Live' button after jumping to live
-        }
 
         if (streamUrl) {
             if (Hls.isSupported()) {
@@ -75,22 +39,26 @@
                 
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     videoElement.play();
-                    checkLiveStatus();
                 });
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
                 videoElement.src = streamUrl;
                 videoElement.addEventListener('loadedmetadata', function() {
                     videoElement.play();
-                    checkLiveStatus();
                 });
             } else {
                 videoElement.src = streamUrl;
                 videoElement.addEventListener('loadedmetadata', function() {
                     videoElement.play();
-                    checkLiveStatus();
                 });
             }
         }
+
+        const player = new Plyr(videoElement, {
+            controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
+            settings: ['quality', 'speed', 'audio track'],
+            tooltips: { controls: false, seek: true },
+            displayDuration: false // Hide duration display
+        });
 
         player.on('playing', () => {
             console.log('Video is playing');
