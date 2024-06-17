@@ -1,6 +1,5 @@
 /* styles.css */
 
-/* Global styling */
 body {
     font-family: Arial, sans-serif;
     background-color: #000;
@@ -34,43 +33,12 @@ footer {
     width: 100%;
 }
 
-/* Plyr specific styling */
-.plyr {
-    border-radius: 8px; /* Rounded corners for Plyr player */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Drop shadow for Plyr player */
+#playerContainer {
+    position: relative;
+    width: 80%;
+    max-width: 800px; /* Limit max width for larger screens */
 }
 
-.plyr--video {
-    background-color: #000; /* Background color for Plyr player */
-}
-
-.plyr__controls {
-    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background for controls */
-}
-
-.plyr__control {
-    color: #fff; /* Control icons color */
-}
-
-.plyr__progress--played,
-.plyr__volume--display {
-    background-color: #009688; /* Progress bar and volume bar color */
-}
-
-.plyr__time {
-    color: #fff; /* Text color for current and duration time */
-}
-
-.plyr__tooltip {
-    background-color: #009688; /* Tooltip background color */
-}
-
-.plyr__tooltip--visible {
-    opacity: 1; /* Make tooltip fully visible */
-}
-
-@media (max-width: 768px) {
-    #playerContainer {
-        width: 100%; /* Full width on smaller screens */
-    }
+#player {
+    width: 100%;
 }
