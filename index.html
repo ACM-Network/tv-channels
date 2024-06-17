@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Network</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your custom CSS styles -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
@@ -22,7 +22,6 @@
     </header>
 
     <main id="channelList">
-        <!-- Channel listings with onclick events to play the channel -->
         <div class="channel entertainment" onclick="playChannel('https://madplay.live/hls/jiotv/stream.php?id=638&e=.m3u8')">
             <img src="https://1000logos.net/wp-content/uploads/2021/02/Zee-Telugu-logo.jpg" alt="Zee Telugu">
             <h3>Zee Telugu</h3>
@@ -50,6 +49,10 @@
         <div class="channel news" onclick="playChannel('https://madplay.live/hls/jiotv/stream.php?id=664&e=.m3u8')">
             <img src="http://jiotv.catchup.cdn.jio.com/dare_images/images/Raj_News_Telugu.png" alt="Raj News Telugu">
             <h3>Raj News Telugu</h3>
+        </div>
+        <div class="channel kids" onclick="playChannel('https://bpprod3catchup.akamaized.net/bpk-tv/irdeto_com_Channel_365/output/dash/Sony_Yay-video=1297600-214763245.m3u')">
+            <img src="http://jiotv.catchup.cdn.jio.com/dare_images/images/Sony_Yay_Telugu.png" alt="Sony Yay Telugu">
+            <h3>Sony Yay Telugu</h3>
         </div>
         <div class="channel kids" onclick="playChannel('https://madplay.live/hls/jiotv/stream.php?id=1080&e=.m3u8')">
             <img src="http://jiotv.catchup.cdn.jio.com/dare_images/images/CN_HD_Telugu.png" alt="CN HD+ Telugu">
@@ -95,48 +98,39 @@
             <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Hungama_TV.png" alt="Hungama TV Hindi">
             <h3>Hungama TV Hindi</h3>
         </div>
-        <div class="channel music" onclick="playChannel('https://desktop.harimishra9109.workers.dev/bpk-tv/Raj_Music_Telugu_MOB/Fallback/index.m3u8')">
-            <img src="https://jiotvimages.cdn.jio.com/dare_images/images/Raj_Music_Telugu.png" alt="Raj Music Telugu">
-            <h3>Raj Music Telugu</h3>
+        <div class="channel news" onclick="playChannel('https://news.codeautoplay.workers.dev/?codeby=nd&channel=zeetelugu')">
+            <img src="https://ltsk-cdn.s3.eu-west-1.amazonaws.com/jumpstart/Temp_Live/cdn/HLS/Channel/ZTELNEWS_Thumbnail-v1/ZTELNEWS_Thumbnail.png" alt="ZEE News Telugu">
+            <h3>ZEE News Telugu</h3>
         </div>
-        <div class="channel sports" onclick="playChannel('https://desktop.harimishra9109.workers.dev/bpk-tv/Star-Sports-1_Telugu_MOB/Fallback/index.m3u8')">
-            <img src="https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_1_Telugu.png" alt="Star Sports 1 Telugu">
-            <h3>Star Sports 1 Telugu</h3>
+        <div class="channel kids" onclick="playChannel('https://raw.githubusercontent.com/ACM-Network/Disney-Channel-Hindi.m3u/main/Disney%20Hindi.m3u')">
+            <img src="https://seeklogo.com/images/D/disney-channel-logo-D392143AEA-seeklogo.com.png" alt="Disney Channel Hindi">
+            <h3>Disney Channel Hindi</h3>
         </div>
-        <div class="channel sports" onclick="playChannel('https://desktop.harimishra9109.workers.dev/bpk-tv/Star-Sports-2_Telugu_MOB/Fallback/index.m3u8')">
-            <img src="https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_2_Telugu.png" alt="Star Sports 2 Telugu">
-            <h3>Star Sports 2 Telugu</h3>
-        </div>
-        <div class="channel sports" onclick="playChannel('https://desktop.harimishra9109.workers.dev/bpk-tv/Star-Sports-3_Telugu_MOB/Fallback/index.m3u8')">
-            <img src="https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_3_Telugu.png" alt="Star Sports 3 Telugu">
-            <h3>Star Sports 3 Telugu</h3>
-        </div>
-        <div class="channel sports" onclick="playChannel('https://desktop.harimishra9109.workers.dev/bpk-tv/Star-Sports-4_Telugu_MOB/Fallback/index.m3u8')">
-            <img src="https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_4_Telugu.png" alt="Star Sports 4 Telugu">
-            <h3>Star Sports 4 Telugu</h3>
-        </div>
-        <div class="channel sports" onclick="playChannel('https://desktop.harimishra9109.workers.dev/bpk-tv/Star-Sports-5_Telugu_MOB/Fallback/index.m3u8')">
-            <img src="https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_5_Telugu.png" alt="Star Sports 5 Telugu">
-            <h3>Star Sports 5 Telugu</h3>
-        </div>
-        <div class="channel sports" onclick="playChannel('https://desktop.harimishra9109.workers.dev/bpk-tv/Star-Sports-6_Telugu_MOB/Fallback/index.m3u8')">
-            <img src="https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_6_Telugu.png" alt="Star Sports 6 Telugu">
-            <h3>Star Sports 6 Telugu</h3>
-        </div>
-        <div class="channel sports" onclick="playChannel('https://desktop.harimishra9109.workers.dev/bpk-tv/Star-Sports-7_Telugu_MOB/Fallback/index.m3u8')">
-            <img src="https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_7_Telugu.png" alt="Star Sports 7 Telugu">
-            <h3>Star Sports 7 Telugu</h3>
-        </div>
-        <div class="channel sports" onclick="playChannel('https://desktop.harimishra9109.workers.dev/bpk-tv/Star-Sports-8_Telugu_MOB/Fallback/index.m3u8')">
-            <img src="https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_8_Telugu.png" alt="Star Sports 8 Telugu">
-            <h3>Star Sports 8 Telugu</h3>
-        </div>
-        <div class="channel sports" onclick="playChannel('https://desktop.harimishra9109.workers.dev/bpk-tv/Star-Sports-9_Telugu_MOB/Fallback/index.m3u8')">
-            <img src="https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_9_Telugu.png" alt="Star Sports 9 Telugu">
-            <h3>Star Sports 9 Telugu</h3>
-        </div>
+        
     </main>
 
-    <script src="script.js"></script> <!-- Link to your JavaScript file -->
+    <footer>
+        <p>ACM Network &copy; 2024</p>
+    </footer>
+
+    <script>
+        function filterChannels() {
+            const category = document.getElementById('categoryFilter').value;
+            const channels = document.querySelectorAll('.channel');
+            channels.forEach(channel => {
+                if (category === 'all' || channel.classList.contains(category)) {
+                    channel.style.display = 'block';
+                } else {
+                    channel.style.display = 'none';
+                }
+            });
+        }
+
+        function playChannel(url) {
+            window.open('player.html?url=' + encodeURIComponent(url), '_blank');
+        }
+    </script>
 </body>
 </html>
+
+It's index.html 
