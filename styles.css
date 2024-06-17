@@ -2,8 +2,8 @@
 
 /* General styles */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
     color: #fff;
     margin: 0;
     padding: 0;
@@ -14,6 +14,7 @@ body {
 header {
     background-color: #222;
     padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 h1 {
@@ -35,6 +36,7 @@ select {
     background-color: #333;
     color: #fff;
     outline: none;
+    border-radius: 4px;
 }
 
 /* Main content area */
@@ -47,34 +49,34 @@ main {
 
 /* Channel cards */
 .channel {
-    width: 220px;
-    margin: 10px;
+    width: 240px;
+    margin: 20px;
     cursor: pointer;
     border: 1px solid #444;
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
-    position: relative; /* Added for absolute positioning of play button */
-    transition: transform 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .channel:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .channel img {
     width: 100%;
-    height: auto;
-    max-height: 160px;
-    object-fit: contain;
-    border-radius: 8px 8px 0 0; /* Rounded corners for top of image */
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
 }
 
 .channel .logo-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 120px; /* Adjust based on card height */
+    height: 120px;
     overflow: hidden;
 }
 
@@ -82,16 +84,17 @@ main {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    border-radius: 50%; /* Ensures circular shape */
+    border-radius: 50%;
 }
 
 .channel h3 {
     margin: 0;
     padding: 10px;
-    background-color: #111;
+    background-color: rgba(0, 0, 0, 0.8);
     font-size: 18px;
     text-align: center;
     text-transform: uppercase;
+    border-radius: 0 0 10px 10px;
 }
 
 /* Play button overlay */
@@ -106,7 +109,7 @@ main {
     border-radius: 50%;
     font-size: 24px;
     cursor: pointer;
-    display: none; /* Initially hidden */
+    display: none;
     transition: background-color 0.3s ease;
 }
 
@@ -132,7 +135,7 @@ main {
     align-items: center;
     opacity: 0;
     transition: opacity 0.3s ease;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 .channel:hover .overlay {
@@ -162,6 +165,7 @@ footer {
     position: fixed;
     bottom: 0;
     width: 100%;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Video player container */
@@ -181,7 +185,8 @@ footer {
 /* Responsive adjustments */
 @media (max-width: 1024px) {
     .channel {
-        width: calc(33.33% - 20px);
+        width: calc(33.33% - 40px);
+        margin: 20px;
     }
 }
 
@@ -195,7 +200,7 @@ footer {
     }
 
     .channel {
-        width: calc(50% - 20px);
+        width: calc(50% - 40px);
     }
 }
 
@@ -206,112 +211,112 @@ footer {
 
     .channel {
         width: 100%;
+        margin: 10px 0;
     }
 }
 
 /* Additional Features */
 
-/* 1. Improved Responsive Design */
-@media (max-width: 360px) {
-    .channel {
-        width: 100%;
-    }
-}
-
-/* 2. Enhanced Hover Effects */
-.channel:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* 3. Styling for Channel Description */
-.channel .description {
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 8px;
+/* 1. Gradient Overlay on Channel Cards */
+.channel:before {
+    content: '';
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
+    z-index: 1;
+    border-radius: 10px;
+}
+
+/* 2. Smooth Hover Animation */
+.channel:before {
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
-.channel:hover .description {
+.channel:hover:before {
     opacity: 1;
 }
 
-.channel .description p {
-    margin: 0;
-    font-size: 12px;
-    line-height: 1.4;
-}
-
-/* 4. Play Icon Styling */
-.channel .play-icon {
+/* 3. Play Icon Styling */
+.channel .play-button {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 36px;
-    color: rgba(255, 255, 255, 0.9);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 2;
 }
 
-.channel:hover .play-icon {
+.channel .play-button:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+/* 4. Overlay Animation */
+.channel .overlay {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+}
+
+.channel:hover .overlay {
     opacity: 1;
 }
 
-/* 5. Footer Text Styling */
-footer p {
-    margin: 0;
-    font-size: 14px;
+/* 5. Footer Link Styling */
+footer a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
     color: #888;
 }
 
-/* 6. Button Hover Effects */
+/* 6. Button Styling */
 button {
-    padding: 10px 20px;
+    padding: 12px 24px;
     border: none;
     background-color: #333;
     color: #fff;
+    font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    border-radius: 4px;
 }
 
 button:hover {
     background-color: #555;
 }
 
-/* 7. Full Screen Button Styling */
-.plyr__controls button[data-plyr="fullscreen"] {
-    background-color: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    padding: 10px;
-    border-radius: 50%;
-    font-size: 24px;
-}
-
-/* 8. Quality Button Styling */
-.plyr__menu__container .plyr__menu__item[data-plyr="settings"][data-plyr-setting="quality"] {
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 8px 16px;
-    border-radius: 4px;
-}
-
-/* 9. Channel Card Animation */
+/* 7. Animated Fade-in for Channel Cards */
 @keyframes fadeIn {
-    0% {
+    from {
         opacity: 0;
         transform: translateY(20px);
     }
-    100% {
+    to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
 .channel {
-    animation: fadeIn 0.5s ease forwards;
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* 8. Box Shadow Adjustment */
+@media (hover: hover) {
+    .channel {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 }
