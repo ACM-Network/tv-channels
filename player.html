@@ -98,47 +98,54 @@
 
     <script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script> <!-- Plyr JS -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script> <!-- Hls.js for HLS support -->
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const streamUrl = urlParams.get('url');
-        const videoElement = document.getElementById('player');
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const streamUrl = urlParams.get('url');
+    const videoElement = document.getElementById('player');
 
-        if (streamUrl) {
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(streamUrl);
-                hls.attachMedia(videoElement);
-                
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    videoElement.play();
+    if (streamUrl) {
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(streamUrl);
+            hls.attachMedia(videoElement);
+            
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                videoElement.play().catch(function(error) {
+                    console.log('Autoplay was prevented:', error);
+                    // Handle autoplay was prevented scenario
                 });
-            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                videoElement.src = streamUrl;
-                videoElement.addEventListener('loadedmetadata', function() {
-                    videoElement.play();
+            });
+        } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+            videoElement.src = streamUrl;
+            videoElement.addEventListener('loadedmetadata', function() {
+                videoElement.play().catch(function(error) {
+                    console.log('Autoplay was prevented:', error);
+                    // Handle autoplay was prevented scenario
                 });
-            } else {
-                videoElement.src = streamUrl;
-                videoElement.addEventListener('loadedmetadata', function() {
-                    videoElement.play();
+            });
+        } else {
+            videoElement.src = streamUrl;
+            videoElement.addEventListener('loadedmetadata', function() {
+                videoElement.play().catch(function(error) {
+                    console.log('Autoplay was prevented:', error);
+                    // Handle autoplay was prevented scenario
                 });
-            }
+            });
         }
+    }
 
-        const player = new Plyr(videoElement, {
-            controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
-            settings: ['quality', 'speed', 'captions', 'audio', 'audio-track'], // Added 'audio' and 'audio-track' to settings
-            tooltips: { controls: false, seek: true },
-            displayDuration: false // Hide duration display
-        });
+    const player = new Plyr(videoElement, {
+        controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
+        settings: ['quality', 'speed', 'captions', 'audio', 'audio-track'], // Added 'audio' and 'audio-track' to settings
+        tooltips: { controls: false, seek: true },
+        displayDuration: false // Hide duration display
+    });
 
-        player.on('playing', () => {
-            console.log('Video is playing');
-        });
+    player.on('playing', () => {
+        console.log('Video is playing');
+    });
 
-        player.on('waiting', () => {
-            console.log('Buffering...');
-        });
-    </script>
-</body>
-</html>
+    player.on('waiting', () => {
+        console.log('Buffering...');
+    });
+</script>
