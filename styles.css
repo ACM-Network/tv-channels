@@ -65,7 +65,23 @@ main {
     width: 100%;
     height: auto;
     max-height: 160px;
-    object-fit: cover;
+    object-fit: contain;
+    border-radius: 8px 8px 0 0; /* Rounded corners for top of image */
+}
+
+.channel .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120px; /* Adjust based on card height */
+    overflow: hidden;
+}
+
+.channel .logo-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 50%; /* Ensures circular shape */
 }
 
 .channel h3 {
