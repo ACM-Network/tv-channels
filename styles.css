@@ -69,3 +69,46 @@ footer {
     width: 100%;
     height: auto;
 }
+
+.custom-controls {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+    justify-content: space-between;
+}
+
+#play-icon, #pause-icon, #mute-icon, #unmute-icon {
+    display: none;
+}
+
+button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+input[type=range] {
+    flex: 1;
+    margin: 0 10px;
+}
+
+#live-indicator {
+    color: red;
+    margin-right: auto;
+}
+
+#play-pause span, #mute-unmute span {
+    display: none;
+}
+
+#play-pause span:target, #mute-unmute span:target {
+    display: inline;
+}
