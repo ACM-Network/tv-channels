@@ -18,7 +18,9 @@ header {
 
 h1 {
     margin: 0;
-    font-size: 28px;
+    font-size: 32px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 nav {
@@ -26,12 +28,13 @@ nav {
 }
 
 select {
-    padding: 8px;
+    padding: 10px;
     font-size: 16px;
     width: 300px;
     border: none;
     background-color: #333;
     color: #fff;
+    outline: none;
 }
 
 /* Main content area */
@@ -44,7 +47,7 @@ main {
 
 /* Channel cards */
 .channel {
-    width: 200px;
+    width: 220px;
     margin: 10px;
     cursor: pointer;
     border: 1px solid #444;
@@ -61,7 +64,7 @@ main {
 .channel img {
     width: 100%;
     height: auto;
-    max-height: 120px;
+    max-height: 160px;
     object-fit: cover;
 }
 
@@ -69,7 +72,9 @@ main {
     margin: 0;
     padding: 10px;
     background-color: #111;
-    font-size: 16px;
+    font-size: 18px;
+    text-align: center;
+    text-transform: uppercase;
 }
 
 /* Footer */
@@ -85,7 +90,7 @@ footer {
 #playerContainer {
     position: relative;
     width: 80%;
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
@@ -96,7 +101,17 @@ footer {
 }
 
 /* Responsive adjustments */
+@media (max-width: 1024px) {
+    .channel {
+        width: calc(33.33% - 20px);
+    }
+}
+
 @media (max-width: 768px) {
+    h1 {
+        font-size: 28px;
+    }
+    
     main {
         padding: 10px;
     }
@@ -107,6 +122,10 @@ footer {
 }
 
 @media (max-width: 480px) {
+    h1 {
+        font-size: 24px;
+    }
+
     .channel {
         width: 100%;
     }
