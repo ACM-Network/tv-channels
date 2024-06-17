@@ -1,3 +1,6 @@
+/* styles.css */
+
+/* Global styling */
 body {
     font-family: Arial, sans-serif;
     background-color: #000;
@@ -16,56 +19,58 @@ h1 {
     margin: 0;
 }
 
-nav {
-    margin: 10px 0;
-}
-
-select {
-    padding: 5px;
-    font-size: 16px;
-    width: 300px; /* Adjust the width as needed */
-}
-
 main {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-}
-
-.channel {
-    width: 200px;
-    margin: 10px;
-    cursor: pointer;
-    border: 1px solid #444;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.channel img {
-    width: 100%;
-    height: auto;
-    max-height: 120px;
-    object-fit: contain;
-}
-
-.channel h3 {
-    margin: 0;
-    padding: 10px;
-    background-color: #111;
+    align-items: center;
+    min-height: 100vh; /* Ensure main takes full height of viewport */
 }
 
 footer {
     background-color: #222;
     padding: 10px;
-}
-
-#playerContainer {
-    position: relative;
-    width: 80%;
-    margin: 0 auto;
-}
-
-#player {
+    position: fixed;
+    bottom: 0;
     width: 100%;
-    height: auto;
+}
+
+/* Plyr specific styling */
+.plyr {
+    border-radius: 8px; /* Rounded corners for Plyr player */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Drop shadow for Plyr player */
+}
+
+.plyr--video {
+    background-color: #000; /* Background color for Plyr player */
+}
+
+.plyr__controls {
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background for controls */
+}
+
+.plyr__control {
+    color: #fff; /* Control icons color */
+}
+
+.plyr__progress--played,
+.plyr__volume--display {
+    background-color: #009688; /* Progress bar and volume bar color */
+}
+
+.plyr__time {
+    color: #fff; /* Text color for current and duration time */
+}
+
+.plyr__tooltip {
+    background-color: #009688; /* Tooltip background color */
+}
+
+.plyr__tooltip--visible {
+    opacity: 1; /* Make tooltip fully visible */
+}
+
+@media (max-width: 768px) {
+    #playerContainer {
+        width: 100%; /* Full width on smaller screens */
+    }
 }
