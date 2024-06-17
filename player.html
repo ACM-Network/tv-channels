@@ -4,32 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Network Player</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your updated styles.css -->
     <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css"> <!-- Plyr CSS -->
-    <link rel="stylesheet" href="styles.css"> <!-- Your custom CSS -->
     <style>
+        /* Additional custom styles */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
             color: #fff;
             margin: 0;
             padding: 0;
             text-align: center;
+            line-height: 1.6;
         }
 
         header {
             background-color: #222;
             padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         h1 {
             margin: 0;
+            font-size: 32px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        nav {
+            margin: 10px 0;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            border: none;
+            background-color: #333;
+            color: #fff;
+            outline: none;
+            border-radius: 4px;
         }
 
         main {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* Ensure main takes full height of viewport */
+            height: 80vh;
+        }
+
+        #playerContainer {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        #player {
+            width: 100%;
+            height: auto;
         }
 
         footer {
@@ -38,16 +71,73 @@
             position: fixed;
             bottom: 0;
             width: 100%;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        #playerContainer {
-            position: relative;
-            width: 80%;
-            max-width: 800px; /* Limit max width for larger screens */
+        /* Plyr specific styles */
+        .plyr__controls {
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
         }
 
-        #player {
+        .plyr__controls button {
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .plyr__controls button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .plyr__controls input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
             width: 100%;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.3);
+            outline: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .plyr__controls input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            background-color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .plyr__controls input[type="range"]:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .plyr__tooltip--visible {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border-radius: 4px;
+            font-size: 14px;
+            padding: 6px 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .plyr__control:hover {
+            transform: translateY(-3px);
+            transition: transform 0.2s ease;
+        }
+
+        .plyr--hide-controls .plyr__controls {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+        }
+
+        .plyr--hide-controls:hover .plyr__controls {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease, visibility 0s linear 0s;
         }
     </style>
 </head>
@@ -58,8 +148,8 @@
 
     <main>
         <div id="playerContainer">
-            <video id="player" playsinline>
-                <!-- Video sources will be loaded dynamically -->
+            <video controls crossorigin playsinline id="player">
+                <source src="" type="application/x-mpegURL">
             </video>
         </div>
     </main>
@@ -68,37 +158,50 @@
         <p>ACM Network &copy; 2024</p>
     </footer>
 
-    <!-- Plyr and Hls.js scripts -->
     <script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script> <!-- Plyr JS -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script> <!-- Hls.js for HLS support -->
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const streamUrl = urlParams.get('url'); // Get the 'url' parameter from the query string
+        const streamUrl = urlParams.get('url');
+        const videoElement = document.getElementById('player');
 
-        const player = new Plyr('#player', {
-            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
-            settings: ['captions', 'quality', 'speed', 'loop'], // Enable captions, quality, speed, and loop options
-            tooltips: {
-                controls: true, // Show tooltips on controls
-                seek: true // Show seek tooltip
-            },
-            displayDuration: true // Show duration in the progress bar
-        });
-
-        // Load HLS stream if URL parameter is present
         if (streamUrl) {
             if (Hls.isSupported()) {
                 const hls = new Hls();
                 hls.loadSource(streamUrl);
-                hls.attachMedia(player.media);
-                hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                    player.play(); // Autoplay once manifest is parsed
+                hls.attachMedia(videoElement);
+                
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    videoElement.play();
                 });
-            } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
-                player.src = streamUrl;
-                player.play(); // Autoplay if supported
+            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play();
+                });
+            } else {
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play();
+                });
             }
         }
+
+        const player = new Plyr(videoElement, {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'fullscreen'],
+            settings: ['captions', 'quality', { name: 'speed', default: 1, options: [0.5, 1, 1.5, 2] }, 'loop', 'fullscreen'],
+            tooltips: { controls: true, seek: true },
+            displayDuration: true,
+            captions: { active: true, language: 'auto', update: true }
+        });
+
+        player.on('playing', () => {
+            console.log('Video is playing');
+        });
+
+        player.on('waiting', () => {
+            console.log('Buffering...');
+        });
     </script>
 </body>
 </html>
