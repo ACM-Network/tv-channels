@@ -29,70 +29,12 @@ main {
     width: 80%;
     max-width: 800px;
     height: auto; /* Maintain aspect ratio */
+    margin: 0 auto;
 }
 
 #player {
     width: 100%;
     height: auto;
-}
-
-.custom-controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.control-btn {
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 18px;
-    cursor: pointer;
-}
-
-#play-icon, #pause-icon, #mute-icon, #unmute-icon {
-    display: none;
-}
-
-#play-icon, #mute-icon {
-    display: inline;
-}
-
-input[type=range] {
-    flex: 1;
-    margin: 0 10px;
-    appearance: none;
-    height: 5px;
-    background: #fff;
-    cursor: pointer;
-}
-
-input[type=range]::-webkit-slider-thumb {
-    appearance: none;
-    width: 15px;
-    height: 15px;
-    background: #fff;
-    border-radius: 50%;
-}
-
-input[type=range]::-moz-range-thumb {
-    width: 15px;
-    height: 15px;
-    background: #fff;
-    border-radius: 50%;
-}
-
-#live-indicator {
-    color: red;
-    margin-right: auto;
-    font-size: 18px;
 }
 
 footer {
