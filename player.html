@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Network Player</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css"> <!-- Plyr CSS -->
+    <link rel="stylesheet" href="styles.css"> <!-- Your custom CSS -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,7 +29,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 80vh; /* Adjust as needed */
+            min-height: 100vh; /* Ensure main takes full height of viewport */
+        }
+
+        footer {
+            background-color: #222;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
         }
 
         #playerContainer {
@@ -49,8 +58,8 @@
 
     <main>
         <div id="playerContainer">
-            <video controls crossorigin playsinline id="player">
-                <source src="" type="application/x-mpegURL">
+            <video id="player" playsinline>
+                <!-- Video sources will be loaded dynamically -->
             </video>
         </div>
     </main>
@@ -66,45 +75,30 @@
         const urlParams = new URLSearchParams(window.location.search);
         const streamUrl = urlParams.get('url'); // Get the 'url' parameter from the query string
 
-        // Get the video element
-        const videoElement = document.getElementById('player');
+        const player = new Plyr('#player', {
+            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+            settings: ['captions', 'quality', 'audio'], // Enable captions, quality, and audio track selection
+            tooltips: {
+                controls: true, // Show tooltips on controls
+                seek: true // Show seek tooltip
+            },
+            displayDuration: true // Show duration in the progress bar
+        });
 
+        // Load HLS stream if URL parameter is present
         if (streamUrl) {
             if (Hls.isSupported()) {
                 const hls = new Hls();
                 hls.loadSource(streamUrl);
-                hls.attachMedia(videoElement);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    videoElement.play();
+                hls.attachMedia(player.media);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    player.play(); // Autoplay once manifest is parsed
                 });
-            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                videoElement.src = streamUrl;
-                videoElement.addEventListener('loadedmetadata', function() {
-                    videoElement.play();
-                });
-            } else {
-                videoElement.src = streamUrl;
-                videoElement.addEventListener('loadedmetadata', function() {
-                    videoElement.play();
-                });
+            } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+                player.src = streamUrl;
+                player.play(); // Autoplay if supported
             }
         }
-
-        const player = new Plyr(videoElement, {
-            controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
-            settings: ['quality', 'speed', 'captions', 'audio', 'audio-track'],
-            tooltips: { controls: false, seek: true },
-            displayDuration: false
-        });
-
-        // Event listeners for Plyr events
-        player.on('playing', () => {
-            console.log('Video is playing');
-        });
-
-        player.on('waiting', () => {
-            console.log('Buffering...');
-        });
     </script>
 </body>
 </html>
