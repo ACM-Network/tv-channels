@@ -98,54 +98,123 @@
 
     <script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script> <!-- Plyr JS -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script> <!-- Hls.js for HLS support -->
-<script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const streamUrl = urlParams.get('url');
-    const videoElement = document.getElementById('player');
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const streamUrl = urlParams.get('url');
+        const videoElement = document.getElementById('player');
 
-    if (streamUrl) {
-        if (Hls.isSupported()) {
-            const hls = new Hls();
-            hls.loadSource(streamUrl);
-            hls.attachMedia(videoElement);
-            
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                videoElement.play().catch(function(error) {
-                    console.log('Autoplay was prevented:', error);
-                    // Handle autoplay was prevented scenario
+        if (streamUrl) {
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(streamUrl);
+                hls.attachMedia(videoElement);
+
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    videoElement.play().catch(function(error) {
+                        console.log('Autoplay was prevented:', error);
+                        // Handle autoplay was prevented scenario
+                    });
                 });
-            });
-        } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-            videoElement.src = streamUrl;
-            videoElement.addEventListener('loadedmetadata', function() {
-                videoElement.play().catch(function(error) {
-                    console.log('Autoplay was prevented:', error);
-                    // Handle autoplay was prevented scenario
+            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play().catch(function(error) {
+                        console.log('Autoplay was prevented:', error);
+                        // Handle autoplay was prevented scenario
+                    });
                 });
-            });
-        } else {
-            videoElement.src = streamUrl;
-            videoElement.addEventListener('loadedmetadata', function() {
-                videoElement.play().catch(function(error) {
-                    console.log('Autoplay was prevented:', error);
-                    // Handle autoplay was prevented scenario
+            } else {
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play().catch(function(error) {
+                        console.log('Autoplay was prevented:', error);
+                        // Handle autoplay was prevented scenario
+                    });
                 });
-            });
+            }
         }
-    }
 
-    const player = new Plyr(videoElement, {
-        controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
-        settings: ['quality', 'speed', 'captions', 'audio', 'audio-track'], // Added 'audio' and 'audio-track' to settings
-        tooltips: { controls: false, seek: true },
-        displayDuration: false // Hide duration display
-    });
+        const player = new Plyr(videoElement, {
+            controls: [
+                'play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'duration',
+                'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'download', 'fullscreen'
+            ],
+            settings: ['captions', 'quality', 'speed', 'loop', 'audio', 'audio-track'], // Added 'audio' and 'audio-track' to settings
+            tooltips: { controls: false, seek: true },
+            displayDuration: true, // Show duration display
+            invertTime: false, // Show time remaining
+            i18n: {
+                restart: 'Restart',
+                rewind: 'Rewind {seektime}s',
+                play: 'Play',
+                pause: 'Pause',
+                fastForward: 'Forward {seektime}s',
+                seek: 'Seek',
+                seekLabel: '{currentTime} of {duration}',
+                played: 'Played',
+                buffered: 'Buffered',
+                currentTime: 'Current time',
+                duration: 'Duration',
+                volume: 'Volume',
+                mute: 'Mute',
+                unmute: 'Unmute',
+                enableCaptions: 'Enable captions',
+                disableCaptions: 'Disable captions',
+                download: 'Download',
+                enterFullscreen: 'Enter fullscreen',
+                exitFullscreen: 'Exit fullscreen',
+                frameTitle: 'Player for {title}',
+                captions: 'Captions',
+                settings: 'Settings',
+                pip: 'PIP',
+                menuBack: 'Go back to previous menu',
+                speed: 'Speed',
+                normal: 'Normal',
+                quality: 'Quality',
+                loop: 'Loop'
+            }
+        });
 
-    player.on('playing', () => {
-        console.log('Video is playing');
-    });
+        player.on('playing', () => {
+            console.log('Video is playing');
+        });
 
-    player.on('waiting', () => {
-        console.log('Buffering...');
-    });
-</script>
+        player.on('waiting', () => {
+            console.log('Buffering...');
+        });
+
+        // Add more event listeners as needed for additional features
+        player.on('enterfullscreen', () => {
+            console.log('Entered fullscreen');
+        });
+
+        player.on('exitfullscreen', () => {
+            console.log('Exited fullscreen');
+        });
+
+        player.on('captionsenabled', () => {
+            console.log('Captions enabled');
+        });
+
+        player.on('captionsdisabled', () => {
+            console.log('Captions disabled');
+        });
+
+        player.on('languagechange', () => {
+            console.log('Language changed');
+        });
+
+        player.on('qualitychange', event => {
+            console.log('Quality changed to', event.detail.quality);
+        });
+
+        player.on('ratechange', () => {
+            console.log('Playback rate changed');
+        });
+
+        player.on('volumechange', () => {
+            console.log('Volume changed');
+        });
+    </script>
+</body>
+</html>
