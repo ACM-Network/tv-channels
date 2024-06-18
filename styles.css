@@ -175,11 +175,19 @@ footer {
     max-width: 900px;
     margin: 0 auto;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    padding: 20px 0; /* Added padding for spacing */
 }
 
 #player {
     width: 100%;
     height: auto;
+}
+
+/* Plyr controls spacing */
+.plyr__controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; /* Adjust gap to increase spacing between controls */
 }
 
 /* Responsive adjustments */
