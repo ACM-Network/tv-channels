@@ -15,7 +15,7 @@ body {
 
 header {
     background-color: rgb(38, 33, 42);
-    padding: 1rem 3rem;
+    padding: 10px 3rem; /* Adjust padding as needed */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -207,7 +207,6 @@ main {
 footer {
     background-color: #222;
     padding: 10px;
-    position: relative;
     width: 100%;
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
     z-index: 10;
