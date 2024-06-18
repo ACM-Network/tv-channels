@@ -24,6 +24,7 @@ h1 {
     font-size: 32px;
     text-transform: uppercase;
     letter-spacing: 2px;
+    animation: fadeInSlideDown 2s ease-in-out; /* Apply animation to h1 */
 }
 
 nav {
@@ -337,4 +338,20 @@ button:hover {
     .channel {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+}
+
+/* Animation for website name */
+@keyframes fadeInSlideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+header h1 {
+    animation: fadeInSlideDown 2s ease-in-out;
 }
