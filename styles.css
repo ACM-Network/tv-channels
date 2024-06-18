@@ -10,114 +10,231 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
-/* Header */
-.header {
-    background-color: rgb(38, 33, 42);
-    padding-left: 3rem;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+header {
+    background-color: #222;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+h1 {
+    margin: 0;
+    font-size: 32px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: fadeInSlideDown 2s ease-in-out; /* Apply animation to h1 */
+}
+
+nav {
+    margin: 10px 0;
+}
+
+select {
+    padding: 10px;
+    font-size: 16px;
+    width: 300px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    outline: none;
+    border-radius: 4px;
+}
+
+/* Main content area */
+main {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+    flex: 1; /* Make main grow to fill available space */
+    overflow-y: auto;
 }
 
-.header .brand h6 {
-    color: orangered;
-    padding-top: .3rem;
+/* Channel cards */
+.channel {
+    width: 240px;
+    margin: 20px;
+    cursor: pointer;
+    border: 1px solid #444;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.header .brand span {
+.channel:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.channel img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+}
+
+.channel .logo-container {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120px;
+    overflow: hidden;
 }
 
-.header .brand h3 {
-    color: white;
-    font-size: 28px;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+.channel .logo-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
 }
 
-.header .brand {
-    display: flex;
-    padding-top: .3rem;
+.channel h3 {
+    margin: 0;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    font-size: 18px;
+    text-align: center;
+    text-transform: uppercase;
+    border-radius: 0 0 10px 10px;
 }
 
-.header #menuimg {
-    width: 69%;
-    margin-top: .2rem;
+/* Play button overlay */
+.channel .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 50%;
+    font-size: 24px;
     cursor: pointer;
     display: none;
-    float: right;
+    transition: background-color 0.3s ease;
 }
 
-.header .links {
-    padding-right: 3rem;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+.channel:hover .play-button {
+    display: block;
 }
 
-.header .links a {
-    outline: 0px solid transparent;
-    border: 0px solid transparent;
-    margin-right: .3rem;
-    border-radius: 0px;
+.channel .play-button:hover {
+    background-color: rgba(0, 0, 0, 0.9);
 }
 
-.header .links a:focus {
-    outline: 0px solid transparent;
-    border: 0px solid transparent;
+/* Card overlay for additional information */
+.channel .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 10px;
 }
 
-/* Responsive adjustments for header */
-@media only screen and (max-width: 800px) {
-    .header {
-        padding-left: 1.5rem;
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-        display: block;
+.channel:hover .overlay {
+    opacity: 1;
+}
+
+.channel .overlay-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.channel .overlay-content h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.channel .overlay-content p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Footer */
+footer {
+    background-color: #222;
+    padding: 10px;
+    position: relative;
+    width: 100%;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+/* Video player container */
+#playerContainer {
+    position: relative;
+    flex: 1; /* Make the player container grow to fill available space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0 auto;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#player {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+}
+
+/* Plyr controls spacing */
+.plyr__controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px; /* Adjust gap to increase spacing between controls */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .channel {
+        width: calc(33.33% - 40px);
+        margin: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 28px;
+    }
+    
+    main {
+        padding: 10px;
+    }
+
+    .channel {
+        width: calc(50% - 40px);
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 24px;
+    }
+
+    .channel {
         width: 100%;
-        justify-content: space-between;
-    }
-
-    .header .links {
-        width: 100%;
-        margin-top: 1.7rem;
-        padding-bottom: 1rem;
-        display: none;
-    }
-
-    .links #livenow {
-        border: 1.6px solid transparent;
-    }
-
-    .header .links a {
-        left: 0%;
-        width: 100%;
-        display: block;
-        text-align: left;
-        align-items: left;
-        border: 0px solid transparent;
-        border-radius: 0px;
-        margin-top: .7rem;
-    }
-
-    .header #menuimg {
-        display: block;
-        margin-right: 2rem;
-        width: 35%;
-    }
-
-    .header .brand {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .header .brand span {
-        display: flex;
+        margin: 10px 0;
     }
 }
 
-/* Additional features */
+/* Additional Features */
 
 /* 1. Gradient Overlay on Channel Cards */
 .channel:before {
@@ -223,105 +340,18 @@ button:hover {
     }
 }
 
-/* 9. Overflow Hidden */
-body {
-    overflow-x: hidden;
-}
-
-/* 10. Header Brand Styling */
-.header .brand h6 {
-    color: orangered;
-    padding-top: .3rem;
-}
-
-.header .brand span {
-    display: flex;
-}
-
-.header .brand h3 {
-    color: white;
-    font-size: 28px;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-}
-
-.header .brand {
-    display: flex;
-    padding-top: .3rem;
-}
-
-/* 11. Header Menu Image Styling */
-.header #menuimg {
-    width: 69%;
-    margin-top: .2rem;
-    cursor: pointer;
-    display: none;
-    float: right;
-}
-
-.header .links {
-    padding-right: 3rem;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-}
-
-.header .links a {
-    outline: 0px solid transparent;
-    border: 0px solid transparent;
-    margin-right: .3rem;
-    border-radius: 0px;
-}
-
-.header .links a:focus {
-    outline: 0px solid transparent;
-    border: 0px solid transparent;
-}
-
-/* 12. Responsive Header Adjustments */
-@media only screen and (max-width: 800px) {
-    .header {
-        padding-left: 1.5rem;
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-        display: block;
-        width: 100%;
-        justify-content: space-between;
+/* Animation for website name */
+@keyframes fadeInSlideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
     }
-
-    .header .links {
-        width: 100%;
-        margin-top: 1.7rem;
-        padding-bottom: 1rem;
-        display: none;
-    }
-
-    .links #livenow {
-        border: 1.6px solid transparent;
-    }
-
-    .header .links a {
-        left: 0%;
-        width: 100%;
-        display: block;
-        text-align: left;
-        align-items: left;
-        border: 0px solid transparent;
-        border-radius: 0px;
-        margin-top: .7rem;
-    }
-
-    .header #menuimg {
-        display: block;
-        margin-right: 2rem;
-        width: 35%;
-    }
-
-    .header .brand {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .header .brand span {
-        display: flex;
+    100% {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-/* Add any further features or adjustments here */
+header h1 {
+    animation: fadeInSlideDown 2s ease-in-out;
+}
