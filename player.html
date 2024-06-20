@@ -16,11 +16,6 @@
             justify-content: center;
             align-items: center;
             background-color: #f0f0f0;
-            transition: background-color 0.3s ease;
-        }
-        body.dark-mode {
-            background-color: #333;
-            color: #fff;
         }
         #playerContainer {
             max-width: 800px;
@@ -29,13 +24,7 @@
             padding: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 8px;
-            transform: scale(0);
-            animation: scaleUp 0.5s forwards;
-        }
-        @keyframes scaleUp {
-            to {
-                transform: scale(1);
-            }
+            position: relative;
         }
         .plyr__controls__item.my-control {
             display: inline-flex;
@@ -48,6 +37,34 @@
             display: inline-block;
             width: 36px;
             text-align: center;
+        }
+        .volume-slider {
+            width: 100px;
+            margin: 0 10px;
+        }
+        .playback-speed-slider {
+            width: 100px;
+            margin: 0 10px;
+        }
+        .theater-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .mini-player {
+            width: 300px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
         }
     </style>
 </head>
@@ -138,25 +155,33 @@
         const customControlsContainer = document.createElement('div');
         customControlsContainer.className = 'plyr__controls__item plyr__control my-control';
         customControlsContainer.innerHTML = `
-            <button type="button" class="plyr__control my-speed-control" data-plyr="playback-speed" title="Playback speed">
-                <span>1x</span>
-            </button>
-            <button type="button" class="plyr__control" id="screenshot" title="Capture Screenshot">
-                📸
-            </button>
-            <button type="button" class="plyr__control" id="theme-toggle" title="Toggle Dark/Light Mode">
-                🌙
-            </button>
+            <input type="range" class="volume-slider" min="0" max="1" step="0.01" value="1" title="Volume">
+            <input type="range" class="playback-speed-slider" min="0.5" max="2" step="0.1" value="1" title="Playback Speed">
+            <button type="button" class="plyr__control" id="screenshot" title="Capture Screenshot">📸</button>
+            <button type="button" class="plyr__control" id="theme-toggle" title="Toggle Dark/Light Mode">🌙</button>
+            <button type="button" class="plyr__control" id="theater-mode-toggle" title="Toggle Theater Mode">🎬</button>
+            <button type="button" class="plyr__control" id="mini-player-toggle" title="Toggle Mini Player">🖥️</button>
+            <button type="button" class="plyr__control" id="loop-toggle" title="Toggle Loop">🔁</button>
+            <select id="language-selection" title="Select Language">
+                <option value="en" selected>English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+            </select>
         `;
 
         player.elements.controls.appendChild(customControlsContainer);
 
-        const speedControl = customControlsContainer.querySelector('.my-speed-control');
-        speedControl.addEventListener('click', () => {
-            let currentSpeed = player.speed;
-            currentSpeed = currentSpeed === 1 ? 1.25 : currentSpeed === 1.25 ? 1.5 : currentSpeed === 1.5 ? 1.75 : currentSpeed === 1.75 ? 2 : 1;
-            player.speed = currentSpeed;
-            speedControl.querySelector('span').textContent = `${currentSpeed}x`;
+        // Volume slider control
+        const volumeSlider = customControlsContainer.querySelector('.volume-slider');
+        volumeSlider.addEventListener('input', (event) => {
+            player.volume = event.target.value;
+        });
+
+        // Playback speed slider control
+        const speedSlider = customControlsContainer.querySelector('.playback-speed-slider');
+        speedSlider.addEventListener('input', (event) => {
+            player.speed = event.target.value;
         });
 
         // Screenshot feature
@@ -177,17 +202,30 @@
             document.body.classList.toggle('dark-mode');
         });
 
-        // Player event listeners
-        player.on('playing', () => console.log('Video is playing'));
-        player.on('waiting', () => console.log('Buffering...'));
-        player.on('enterfullscreen', () => console.log('Entered fullscreen'));
-        player.on('exitfullscreen', () => console.log('Exited fullscreen'));
-        player.on('captionsenabled', () => console.log('Captions enabled'));
-        player.on('captionsdisabled', () => console.log('Captions disabled'));
-        player.on('languagechange', () => console.log('Language changed'));
-        player.on('qualitychange', event => console.log('Quality changed to', event.detail.quality));
-        player.on('ratechange', () => console.log('Playback rate changed'));
-        player.on('volumechange', () => console.log('Volume changed'));
+        // Theater mode feature
+        document.getElementById('theater-mode-toggle').addEventListener('click', () => {
+            const playerContainer = document.getElementById('playerContainer');
+            playerContainer.classList.toggle('theater-mode');
+        });
+
+        // Mini player feature
+        document.getElementById('mini-player-toggle').addEventListener('click', () => {
+            const playerContainer = document.getElementById('playerContainer');
+            playerContainer.classList.toggle('mini-player');
+        });
+
+        // Loop toggle feature
+        document.getElementById('loop-toggle').addEventListener('click', () => {
+            player.loop = !player.loop;
+        });
+
+        // Language selection feature
+        const languageSelection = document.getElementById('language-selection');
+        languageSelection.addEventListener('change', (event) => {
+            const selectedLanguage = event.target.value;
+            // Here you can add the logic to switch audio tracks or captions based on the selected language.
+            console.log('Selected language:', selectedLanguage);
+        });
     </script>
 </body>
 </html>
