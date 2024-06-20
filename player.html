@@ -92,6 +92,20 @@
                     videoElement.play().catch(function(error) {
                         console.log('Autoplay was prevented:', error);
                     });
+
+                    // Populate audio track menu
+                    const audioTracks = hls.audioTracks;
+                    const audioTrackMenu = document.getElementById('audio-track-menu');
+                    audioTracks.forEach((track, index) => {
+                        const option = document.createElement('option');
+                        option.value = index;
+                        option.textContent = track.name || `Audio Track ${index + 1}`;
+                        audioTrackMenu.appendChild(option);
+                    });
+
+                    audioTrackMenu.addEventListener('change', (event) => {
+                        hls.audioTrack = event.target.value;
+                    });
                 });
             } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
                 videoElement.src = streamUrl;
@@ -168,6 +182,7 @@
                 <option value="fr">French</option>
                 <option value="de">German</option>
             </select>
+            <select id="audio-track-menu" title="Select Audio Track"></select>
         `;
 
         player.elements.controls.appendChild(customControlsContainer);
@@ -220,11 +235,9 @@
         });
 
         // Language selection feature
-        const languageSelection = document.getElementById('language-selection');
-        languageSelection.addEventListener('change', (event) => {
+        document.getElementById('language-selection').addEventListener('change', (event) => {
             const selectedLanguage = event.target.value;
-            // Here you can add the logic to switch audio tracks or captions based on the selected language.
-            console.log('Selected language:', selectedLanguage);
+            player.language = selectedLanguage;
         });
     </script>
 </body>
