@@ -16,6 +16,11 @@
             justify-content: center;
             align-items: center;
             background-color: #f0f0f0;
+            transition: background-color 0.3s ease;
+        }
+        body.dark-mode {
+            background-color: #333;
+            color: #fff;
         }
         #playerContainer {
             max-width: 800px;
@@ -24,6 +29,13 @@
             padding: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 8px;
+            transform: scale(0);
+            animation: scaleUp 0.5s forwards;
+        }
+        @keyframes scaleUp {
+            to {
+                transform: scale(1);
+            }
         }
         .plyr__controls__item.my-control {
             display: inline-flex;
@@ -129,8 +141,11 @@
             <button type="button" class="plyr__control my-speed-control" data-plyr="playback-speed" title="Playback speed">
                 <span>1x</span>
             </button>
-            <button type="button" class="plyr__control" title="Custom Action">
-                <span>🎥</span>
+            <button type="button" class="plyr__control" id="screenshot" title="Capture Screenshot">
+                📸
+            </button>
+            <button type="button" class="plyr__control" id="theme-toggle" title="Toggle Dark/Light Mode">
+                🌙
             </button>
         `;
 
@@ -139,9 +154,27 @@
         const speedControl = customControlsContainer.querySelector('.my-speed-control');
         speedControl.addEventListener('click', () => {
             let currentSpeed = player.speed;
-            currentSpeed = currentSpeed === 1 ? 1.5 : currentSpeed === 1.5 ? 2 : 1;
+            currentSpeed = currentSpeed === 1 ? 1.25 : currentSpeed === 1.25 ? 1.5 : currentSpeed === 1.5 ? 1.75 : currentSpeed === 1.75 ? 2 : 1;
             player.speed = currentSpeed;
             speedControl.querySelector('span').textContent = `${currentSpeed}x`;
+        });
+
+        // Screenshot feature
+        document.getElementById('screenshot').addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            canvas.getContext('2d').drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            const img = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = img;
+            link.download = 'screenshot.png';
+            link.click();
+        });
+
+        // Theme toggle feature
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
         });
 
         // Player event listeners
