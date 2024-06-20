@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Network Player</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css"> <!-- Plyr CSS -->
-    <link rel="stylesheet" href="styles.css"> <!-- Your custom CSS -->
     <style>
         /* Custom styles for the player */
         body, html {
@@ -83,31 +82,19 @@
         const videoElement = document.getElementById('player');
 
         if (streamUrl) {
+            // Check if HLS.js is supported
             if (Hls.isSupported()) {
-    const hls = new Hls();
-    hls.loadSource(streamUrl);
-    hls.attachMedia(videoElement);
+                const hls = new Hls();
+                hls.loadSource(streamUrl);
+                hls.attachMedia(videoElement);
 
-    hls.on(Hls.Events.MANIFEST_PARSED, function() {
-        videoElement.play().catch(function(error) {
-            console.log('Autoplay was prevented:', error);
-        });
-    });
-} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-    videoElement.src = streamUrl;
-    videoElement.addEventListener('loadedmetadata', function() {
-        videoElement.play().catch(function(error) {
-            console.log('Autoplay was prevented:', error);
-        });
-    });
-} else {
-    videoElement.src = streamUrl;
-    videoElement.addEventListener('loadedmetadata', function() {
-        videoElement.play().catch(function(error) {
-            console.log('Autoplay was prevented:', error);
-        });
-    });
-} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    videoElement.play().catch(function(error) {
+                        console.log('Autoplay was prevented:', error);
+                    });
+                });
+            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                // Use native HLS support if available
                 videoElement.src = streamUrl;
                 videoElement.addEventListener('loadedmetadata', function() {
                     videoElement.play().catch(function(error) {
@@ -115,6 +102,7 @@
                     });
                 });
             } else {
+                // Fallback for other formats (may not work with all PHP streaming setups)
                 videoElement.src = streamUrl;
                 videoElement.addEventListener('loadedmetadata', function() {
                     videoElement.play().catch(function(error) {
