@@ -84,30 +84,30 @@
 
         if (streamUrl) {
             if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(streamUrl);
-                hls.attachMedia(videoElement);
+    const hls = new Hls();
+    hls.loadSource(streamUrl);
+    hls.attachMedia(videoElement);
 
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    videoElement.play().catch(function(error) {
-                        console.log('Autoplay was prevented:', error);
-                    });
-
-                    // Populate audio track menu
-                    const audioTracks = hls.audioTracks;
-                    const audioTrackMenu = document.getElementById('audio-track-menu');
-                    audioTracks.forEach((track, index) => {
-                        const option = document.createElement('option');
-                        option.value = index;
-                        option.textContent = track.name || `Audio Track ${index + 1}`;
-                        audioTrackMenu.appendChild(option);
-                    });
-
-                    audioTrackMenu.addEventListener('change', (event) => {
-                        hls.audioTrack = event.target.value;
-                    });
-                });
-            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        videoElement.play().catch(function(error) {
+            console.log('Autoplay was prevented:', error);
+        });
+    });
+} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+    videoElement.src = streamUrl;
+    videoElement.addEventListener('loadedmetadata', function() {
+        videoElement.play().catch(function(error) {
+            console.log('Autoplay was prevented:', error);
+        });
+    });
+} else {
+    videoElement.src = streamUrl;
+    videoElement.addEventListener('loadedmetadata', function() {
+        videoElement.play().catch(function(error) {
+            console.log('Autoplay was prevented:', error);
+        });
+    });
+} else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
                 videoElement.src = streamUrl;
                 videoElement.addEventListener('loadedmetadata', function() {
                     videoElement.play().catch(function(error) {
