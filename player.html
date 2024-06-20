@@ -8,11 +8,22 @@
     <link rel="stylesheet" href="styles.css"> <!-- Your custom CSS -->
     <style>
         /* Custom styles for the player */
-        #bookmarkContainer {
-            margin-top: 10px;
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
         }
-        #bookmarkContainer button {
-            margin-right: 10px;
+        #playerContainer {
+            max-width: 800px;
+            width: 100%;
+            background-color: #000;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
         }
         .plyr__controls__item.my-control {
             display: inline-flex;
@@ -21,28 +32,19 @@
             height: 100%;
             padding: 0 10px;
         }
+        .plyr__controls__item.my-speed-control span {
+            display: inline-block;
+            width: 36px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>ACM Network Player</h1>
-    </header>
-
-    <main>
-        <div id="playerContainer">
-            <video controls crossorigin playsinline id="player">
-                <source src="" type="application/x-mpegURL">
-            </video>
-        </div>
-        <div id="bookmarkContainer">
-            <button id="addBookmark">Add Bookmark</button>
-            <ul id="bookmarksList"></ul>
-        </div>
-    </main>
-
-    <footer>
-        <p>ACM Network &copy; 2024</p>
-    </footer>
+    <div id="playerContainer">
+        <video controls crossorigin playsinline id="player">
+            <source src="" type="application/x-mpegURL">
+        </video>
+    </div>
 
     <script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script> <!-- Plyr JS -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script> <!-- Hls.js for HLS support -->
@@ -120,50 +122,26 @@
             }
         });
 
-        // Custom bookmark feature
-        const bookmarks = [];
-
-        document.getElementById('addBookmark').addEventListener('click', () => {
-            const currentTime = player.currentTime;
-            bookmarks.push(currentTime);
-            updateBookmarksList();
-        });
-
-        function updateBookmarksList() {
-            const bookmarksList = document.getElementById('bookmarksList');
-            bookmarksList.innerHTML = '';
-            bookmarks.forEach((time, index) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `Bookmark ${index + 1}: ${formatTime(time)}`;
-                listItem.addEventListener('click', () => {
-                    player.currentTime = time;
-                });
-                bookmarksList.appendChild(listItem);
-            });
-        }
-
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-
         // Adding custom controls
-        const customControls = document.createElement('div');
-        customControls.className = 'plyr__controls__item plyr__control my-control';
-        customControls.innerHTML = `
-            <button type="button" class="plyr__control" data-plyr="playback-speed" title="Playback speed">
+        const customControlsContainer = document.createElement('div');
+        customControlsContainer.className = 'plyr__controls__item plyr__control my-control';
+        customControlsContainer.innerHTML = `
+            <button type="button" class="plyr__control my-speed-control" data-plyr="playback-speed" title="Playback speed">
                 <span>1x</span>
+            </button>
+            <button type="button" class="plyr__control" title="Custom Action">
+                <span>🎥</span>
             </button>
         `;
 
-        player.elements.controls.appendChild(customControls);
+        player.elements.controls.appendChild(customControlsContainer);
 
-        customControls.addEventListener('click', () => {
+        const speedControl = customControlsContainer.querySelector('.my-speed-control');
+        speedControl.addEventListener('click', () => {
             let currentSpeed = player.speed;
-            currentSpeed = currentSpeed === 1 ? 1.5 : 1;
+            currentSpeed = currentSpeed === 1 ? 1.5 : currentSpeed === 1.5 ? 2 : 1;
             player.speed = currentSpeed;
-            customControls.querySelector('span').textContent = `${currentSpeed}x`;
+            speedControl.querySelector('span').textContent = `${currentSpeed}x`;
         });
 
         // Player event listeners
