@@ -6,6 +6,22 @@
     <title>ACM Network Player</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css"> <!-- Plyr CSS -->
     <link rel="stylesheet" href="styles.css"> <!-- Your custom CSS -->
+    <style>
+        /* Custom styles for the player */
+        #bookmarkContainer {
+            margin-top: 10px;
+        }
+        #bookmarkContainer button {
+            margin-right: 10px;
+        }
+        .plyr__controls__item.my-control {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 0 10px;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -17,6 +33,10 @@
             <video controls crossorigin playsinline id="player">
                 <source src="" type="application/x-mpegURL">
             </video>
+        </div>
+        <div id="bookmarkContainer">
+            <button id="addBookmark">Add Bookmark</button>
+            <ul id="bookmarksList"></ul>
         </div>
     </main>
 
@@ -31,99 +51,132 @@
         const streamUrl = urlParams.get('url');
         const videoElement = document.getElementById('player');
 
-        function initPlyr() {
-            const player = new Plyr(videoElement, {
-                controls: [
-                    'play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'duration',
-                    'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'download', 'fullscreen'
-                ],
-                settings: ['captions', 'quality', 'speed', 'loop', 'audio', 'audio-track'],
-                tooltips: { controls: false, seek: true },
-                displayDuration: true,
-                invertTime: false,
-                i18n: {
-                    restart: 'Restart',
-                    rewind: 'Rewind {seektime}s',
-                    play: 'Play',
-                    pause: 'Pause',
-                    fastForward: 'Forward {seektime}s',
-                    seek: 'Seek',
-                    seekLabel: '{currentTime} of {duration}',
-                    played: 'Played',
-                    buffered: 'Buffered',
-                    currentTime: 'Current time',
-                    duration: 'Duration',
-                    volume: 'Volume',
-                    mute: 'Mute',
-                    unmute: 'Unmute',
-                    enableCaptions: 'Enable captions',
-                    disableCaptions: 'Disable captions',
-                    download: 'Download',
-                    enterFullscreen: 'Enter fullscreen',
-                    exitFullscreen: 'Exit fullscreen',
-                    frameTitle: 'Player for {title}',
-                    captions: 'Captions',
-                    settings: 'Settings',
-                    pip: 'PIP',
-                    menuBack: 'Go back to previous menu',
-                    speed: 'Speed',
-                    normal: 'Normal',
-                    quality: 'Quality',
-                    loop: 'Loop'
-                }
-            });
-
-            player.on('playing', () => console.log('Video is playing'));
-            player.on('waiting', () => console.log('Buffering...'));
-            player.on('enterfullscreen', () => console.log('Entered fullscreen'));
-            player.on('exitfullscreen', () => console.log('Exited fullscreen'));
-            player.on('captionsenabled', () => console.log('Captions enabled'));
-            player.on('captionsdisabled', () => console.log('Captions disabled'));
-            player.on('languagechange', () => console.log('Language changed'));
-            player.on('qualitychange', event => console.log('Quality changed to', event.detail.quality));
-            player.on('ratechange', () => console.log('Playback rate changed'));
-            player.on('volumechange', () => console.log('Volume changed'));
-        }
-
-        function initOtherPlayer() {
-            console.log('Initializing other player...');
-            // Logic for other player goes here
-        }
-
         if (streamUrl) {
-            // Example condition to choose the player (you can replace this with your own logic)
-            if (streamUrl.includes('example1')) {
-                if (Hls.isSupported()) {
-                    const hls = new Hls();
-                    hls.loadSource(streamUrl);
-                    hls.attachMedia(videoElement);
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(streamUrl);
+                hls.attachMedia(videoElement);
 
-                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                        videoElement.play().catch(error => {
-                            console.log('Autoplay was prevented:', error);
-                        });
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    videoElement.play().catch(function(error) {
+                        console.log('Autoplay was prevented:', error);
                     });
-                } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                    videoElement.src = streamUrl;
-                    videoElement.addEventListener('loadedmetadata', function() {
-                        videoElement.play().catch(error => {
-                            console.log('Autoplay was prevented:', error);
-                        });
+                });
+            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play().catch(function(error) {
+                        console.log('Autoplay was prevented:', error);
                     });
-                } else {
-                    videoElement.src = streamUrl;
-                    videoElement.addEventListener('loadedmetadata', function() {
-                        videoElement.play().catch(error => {
-                            console.log('Autoplay was prevented:', error);
-                        });
-                    });
-                }
-
-                initPlyr();
+                });
             } else {
-                initOtherPlayer();
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play().catch(function(error) {
+                        console.log('Autoplay was prevented:', error);
+                    });
+                });
             }
         }
+
+        const player = new Plyr(videoElement, {
+            controls: [
+                'play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'duration',
+                'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'download', 'fullscreen'
+            ],
+            settings: ['captions', 'quality', 'speed', 'loop', 'audio', 'audio-track'],
+            tooltips: { controls: false, seek: true },
+            displayDuration: true,
+            invertTime: false,
+            i18n: {
+                restart: 'Restart',
+                rewind: 'Rewind {seektime}s',
+                play: 'Play',
+                pause: 'Pause',
+                fastForward: 'Forward {seektime}s',
+                seek: 'Seek',
+                seekLabel: '{currentTime} of {duration}',
+                played: 'Played',
+                buffered: 'Buffered',
+                currentTime: 'Current time',
+                duration: 'Duration',
+                volume: 'Volume',
+                mute: 'Mute',
+                unmute: 'Unmute',
+                enableCaptions: 'Enable captions',
+                disableCaptions: 'Disable captions',
+                download: 'Download',
+                enterFullscreen: 'Enter fullscreen',
+                exitFullscreen: 'Exit fullscreen',
+                frameTitle: 'Player for {title}',
+                captions: 'Captions',
+                settings: 'Settings',
+                pip: 'PIP',
+                menuBack: 'Go back to previous menu',
+                speed: 'Speed',
+                normal: 'Normal',
+                quality: 'Quality',
+                loop: 'Loop'
+            }
+        });
+
+        // Custom bookmark feature
+        const bookmarks = [];
+
+        document.getElementById('addBookmark').addEventListener('click', () => {
+            const currentTime = player.currentTime;
+            bookmarks.push(currentTime);
+            updateBookmarksList();
+        });
+
+        function updateBookmarksList() {
+            const bookmarksList = document.getElementById('bookmarksList');
+            bookmarksList.innerHTML = '';
+            bookmarks.forEach((time, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Bookmark ${index + 1}: ${formatTime(time)}`;
+                listItem.addEventListener('click', () => {
+                    player.currentTime = time;
+                });
+                bookmarksList.appendChild(listItem);
+            });
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // Adding custom controls
+        const customControls = document.createElement('div');
+        customControls.className = 'plyr__controls__item plyr__control my-control';
+        customControls.innerHTML = `
+            <button type="button" class="plyr__control" data-plyr="playback-speed" title="Playback speed">
+                <span>1x</span>
+            </button>
+        `;
+
+        player.elements.controls.appendChild(customControls);
+
+        customControls.addEventListener('click', () => {
+            let currentSpeed = player.speed;
+            currentSpeed = currentSpeed === 1 ? 1.5 : 1;
+            player.speed = currentSpeed;
+            customControls.querySelector('span').textContent = `${currentSpeed}x`;
+        });
+
+        // Player event listeners
+        player.on('playing', () => console.log('Video is playing'));
+        player.on('waiting', () => console.log('Buffering...'));
+        player.on('enterfullscreen', () => console.log('Entered fullscreen'));
+        player.on('exitfullscreen', () => console.log('Exited fullscreen'));
+        player.on('captionsenabled', () => console.log('Captions enabled'));
+        player.on('captionsdisabled', () => console.log('Captions disabled'));
+        player.on('languagechange', () => console.log('Language changed'));
+        player.on('qualitychange', event => console.log('Quality changed to', event.detail.quality));
+        player.on('ratechange', () => console.log('Playback rate changed'));
+        player.on('volumechange', () => console.log('Volume changed'));
     </script>
 </body>
 </html>
