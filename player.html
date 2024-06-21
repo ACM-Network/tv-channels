@@ -1,178 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Advanced Video Player with Video.js</title>
-<link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet">
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #f0f0f0;
-    }
-    .video-js {
-        width: 100%;
-        max-width: 800px;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Video Player with Video.js</title>
+    <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .video-js {
+            width: 100%;
+            max-width: 800px;
+        }
+    </style>
 </head>
 <body>
 
 <video id="myVideo" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'>
-    <source src="path_to_your_video.mp4" type="video/mp4">
+    <source id="videoSource" type="application/x-mpegURL">
     Your browser does not support HTML5 video.
 </video>
 
 <script src="https://vjs.zencdn.net/7.15.4/video.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-contrib-quality-levels@2.2.0/dist/videojs-contrib-quality-levels.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-contrib-dash@2.11.0/dist/videojs-contrib-dash.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-contrib-eme@6.2.0/dist/videojs-contrib-eme.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-contrib-ads@7.4.1/dist/videojs-contrib-ads.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-ima@2.7.1/dist/videojs.ima.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-contrib-advanced-vr@2.0.0/dist/videojs-advanced-vr.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-hotkeys@0.3.0/dist/videojs.hotkeys.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-seek-buttons@1.0.1/dist/videojs-seek-buttons.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-thumbnails@2.0.0/dist/videojs-thumbnails.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-watermark@0.1.1/dist/videojs-watermark.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-contextmenu-ui@2.2.1/dist/videojs-contextmenu-ui.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-playlist@4.3.0/dist/videojs-playlist.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-resolution-switcher@0.4.2/dist/videojs-resolution-switcher.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-wavesurfer@2.0.0/dist/videojs.wavesurfer.min.js"></script>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var player = videojs('myVideo');
         
-        // Quality Levels Plugin (for HLS)
-        player.qualityLevels();
+        // Function to get query parameter from URL
+        function getQueryParam(param) {
+            var queryString = window.location.search;
+            var urlParams = new URLSearchParams(queryString);
+            return urlParams.get(param);
+        }
         
-        // Subtitles Track (optional)
-        player.addRemoteTextTrack({
-            kind: 'captions',
-            label: 'English',
-            src: 'path_to_your_subtitle.vtt',
-            srclang: 'en',
-            default: true // Set this to true for default subtitles
-        });
+        // Get the stream URL from query parameter
+        var streamUrl = getQueryParam('streamUrl');
         
-        // Audio Tracks (optional)
-        player.audioTracks().addTrack({
-            enabled: true,
-            label: 'English',
-            language: 'en',
-            src: 'path_to_your_audio_track.mp3'
-        });
+        // Set the source of the video player
+        if (streamUrl) {
+            document.getElementById('videoSource').setAttribute('src', streamUrl);
+        }
         
-        // Ads Plugin (optional)
-        player.ima({
-            adTagUrl: 'https://your.adserver.com/ad.xml',
-            serverUrl: 'https://your.adserver.com/',
-            requestMode: 'onplay'
-        });
-        
-        // VR Plugin (optional)
-        player.vr({
-            projection: '360',
-            debug: true
-        });
-        
-        // Hotkeys Plugin (optional)
-        player.hotkeys({
-            volumeStep: 0.1,
-            seekStep: 5,
-            enableFullscreen: true,
-            enableNumbers: true,
-            enableMute: true
-        });
-        
-        // Seek Buttons Plugin (optional)
-        player.seekButtons({
-            forward: 10,
-            back: 10
-        });
-        
-        // Thumbnails Plugin (optional)
-        player.thumbnails({
-            1: {
-                src: 'path_to_thumbnail_1.jpg',
-                width: 120,
-                height: 90,
-                time: 10
-            },
-            2: {
-                src: 'path_to_thumbnail_2.jpg',
-                width: 120,
-                height: 90,
-                time: 20
-            }
-            // Add more thumbnails as needed
-        });
-        
-        // Watermark Plugin (optional)
-        player.watermark({
-            file: 'path_to_watermark.png',
-            xPos: 10,
-            yPos: 10,
-            clickable: true,
-            url: 'https://yourwebsite.com'
-        });
-        
-        // Context Menu Plugin (optional)
-        player.contextmenu({
-            entries: [
-                { text: 'Custom Menu Item', onClick: function(){ console.log('Custom menu clicked'); } },
-                { text: 'Another Item', href: 'https://example.com', target: '_blank' }
-            ]
-        });
-        
-        // Playlist Plugin (optional)
-        player.playlist([
-            {
-                sources: [{
-                    src: 'path_to_your_video.mp4',
-                    type: 'video/mp4'
-                }],
-                poster: 'path_to_playlist_poster.jpg',
-                title: 'Video Title 1'
-            },
-            {
-                sources: [{
-                    src: 'path_to_another_video.mp4',
-                    type: 'video/mp4'
-                }],
-                poster: 'path_to_another_poster.jpg',
-                title: 'Video Title 2'
-            }
-            // Add more playlist items as needed
-        ]);
-        
-        // Resolution Switcher Plugin (optional)
-        player.resolutionSwitcher({
-            default: 'high', // Default resolution
-            dynamicLabel: true, // Show resolution label dynamically
-            options: [
-                { id: 'low', label: 'Low' },
-                { id: 'high', label: 'High' }
-                // Add more options as needed
-            ]
-        });
-        
-        // Waveform Plugin (optional)
-        player.wavesurfer({
-            backend: 'MediaElement',
-            waveColor: '#36393b',
-            progressColor: '#2ebd59',
-            cursorColor: '#ffffff',
-            barWidth: 3,
-            barGap: null,
-            normalize: true,
-            responsive: true
+        // Initialize the player
+        player.ready(function() {
+            this.play(); // Autoplay if needed
         });
     });
 </script>
