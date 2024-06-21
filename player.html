@@ -24,7 +24,7 @@
 <body>
 
 <video id="myVideo" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'>
-    <source src="" type="application/x-mpegURL">
+    <source src="path_to_your_video.mp4" type="video/mp4">
     Your browser does not support HTML5 video.
 </video>
 
@@ -43,38 +43,15 @@
 <script src="https://cdn.jsdelivr.net/npm/videojs-contextmenu-ui@2.2.1/dist/videojs-contextmenu-ui.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/videojs-playlist@4.3.0/dist/videojs-playlist.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/videojs-resolution-switcher@0.4.2/dist/videojs-resolution-switcher.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-contrib-quality-levels@2.2.0/dist/videojs-contrib-quality-levels.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-thumbnails@2.0.0/dist/videojs-thumbnails.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-resolution-switcher@0.4.2/dist/videojs-resolution-switcher.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/videojs-wavesurfer@2.0.0/dist/videojs.wavesurfer.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-overlay@1.1.4/dist/videojs-overlay.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-chapters@1.0.0/dist/videojs-chapters.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-chromecast@2.4.1/dist/videojs-chromecast.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-playback-rate@1.0.0/dist/videojs-playback-rate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-share@1.0.0/dist/videojs-share.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-analytics@1.0.0/dist/videojs-analytics.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-bookmark@1.0.0/dist/videojs-bookmark.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/videojs-related@1.0.0/dist/videojs-related.min.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const streamUrl = urlParams.get('url');
-
-        if (!streamUrl) {
-            alert('No stream URL provided.');
-            return;
-        }
-
-        const player = videojs('myVideo');
-        player.src({
-            src: streamUrl,
-            type: 'application/x-mpegURL'
-        });
-
+        var player = videojs('myVideo');
+        
         // Quality Levels Plugin (for HLS)
         player.qualityLevels();
-
+        
         // Subtitles Track (optional)
         player.addRemoteTextTrack({
             kind: 'captions',
@@ -83,28 +60,28 @@
             srclang: 'en',
             default: true // Set this to true for default subtitles
         });
-
+        
         // Audio Tracks (optional)
         player.audioTracks().addTrack({
             enabled: true,
             label: 'English',
             language: 'en',
-            src: streamUrl
+            src: 'path_to_your_audio_track.mp3'
         });
-
+        
         // Ads Plugin (optional)
         player.ima({
             adTagUrl: 'https://your.adserver.com/ad.xml',
             serverUrl: 'https://your.adserver.com/',
             requestMode: 'onplay'
         });
-
+        
         // VR Plugin (optional)
         player.vr({
             projection: '360',
             debug: true
         });
-
+        
         // Hotkeys Plugin (optional)
         player.hotkeys({
             volumeStep: 0.1,
@@ -113,13 +90,13 @@
             enableNumbers: true,
             enableMute: true
         });
-
+        
         // Seek Buttons Plugin (optional)
         player.seekButtons({
             forward: 10,
             back: 10
         });
-
+        
         // Thumbnails Plugin (optional)
         player.thumbnails({
             1: {
@@ -136,7 +113,7 @@
             }
             // Add more thumbnails as needed
         });
-
+        
         // Watermark Plugin (optional)
         player.watermark({
             file: 'path_to_watermark.png',
@@ -145,7 +122,7 @@
             clickable: true,
             url: 'https://yourwebsite.com'
         });
-
+        
         // Context Menu Plugin (optional)
         player.contextmenu({
             entries: [
@@ -153,28 +130,28 @@
                 { text: 'Another Item', href: 'https://example.com', target: '_blank' }
             ]
         });
-
+        
         // Playlist Plugin (optional)
         player.playlist([
             {
                 sources: [{
-                    src: streamUrl,
-                    type: 'application/x-mpegURL'
+                    src: 'path_to_your_video.mp4',
+                    type: 'video/mp4'
                 }],
                 poster: 'path_to_playlist_poster.jpg',
                 title: 'Video Title 1'
             },
             {
                 sources: [{
-                    src: 'https://another-stream-url.m3u8',
-                    type: 'application/x-mpegURL'
+                    src: 'path_to_another_video.mp4',
+                    type: 'video/mp4'
                 }],
                 poster: 'path_to_another_poster.jpg',
                 title: 'Video Title 2'
             }
             // Add more playlist items as needed
         ]);
-
+        
         // Resolution Switcher Plugin (optional)
         player.resolutionSwitcher({
             default: 'high', // Default resolution
@@ -185,77 +162,17 @@
                 // Add more options as needed
             ]
         });
-
+        
         // Waveform Plugin (optional)
         player.wavesurfer({
             backend: 'MediaElement',
             waveColor: '#36393b',
             progressColor: '#2ebd59',
-            cursorColor: '#ff0000',
-            interact: true,
-            hideScrollbar: true
-        });
-
-        // Overlay Plugin (optional)
-        player.overlay({
-            overlays: [{
-                content: 'Overlay text',
-                start: 'playing',
-                end: 'pause',
-                align: 'bottom-left'
-            }]
-        });
-
-        // Chapters Plugin (optional)
-        player.chapters({
-            chapters: [{
-                title: 'Introduction',
-                startTime: 0
-            }, {
-                title: 'Middle',
-                startTime: 60
-            }, {
-                title: 'End',
-                startTime: 120
-            }]
-        });
-
-        // Chromecast Plugin (optional)
-        player.chromecast();
-
-        // Playback Rate Plugin (optional)
-        player.playbackRate({
-            rates: [0.5, 1.0, 1.5, 2.0]
-        });
-
-        // Share Plugin (optional)
-        player.share({
-            url: window.location.href
-        });
-
-        // Analytics Plugin (optional)
-        player.analytics({
-            events: ['play', 'pause', 'ended']
-        });
-
-        // Bookmark Plugin (optional)
-        player.bookmark({
-            bookmarks: []
-        });
-
-        // Related Videos Plugin (optional)
-        player.related({
-            videos: [{
-                title: 'Related Video 1',
-                description: 'Description of related video 1',
-                url: 'https://related-video-url-1.m3u8',
-                poster: 'path_to_related_poster_1.jpg'
-            }, {
-                title: 'Related Video 2',
-                description: 'Description of related video 2',
-                url: 'https://related-video-url-2.m3u8',
-                poster: 'path_to_related_poster_2.jpg'
-            }]
+            cursorColor: '#ffffff',
+            barWidth: 3,
+            barGap: null,
+            normalize: true,
+            responsive: true
         });
     });
 </script>
