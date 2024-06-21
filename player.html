@@ -47,6 +47,14 @@
 <script src="https://cdn.jsdelivr.net/npm/videojs-thumbnails@2.0.0/dist/videojs-thumbnails.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/videojs-resolution-switcher@0.4.2/dist/videojs-resolution-switcher.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/videojs-wavesurfer@2.0.0/dist/videojs.wavesurfer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/videojs-overlay@1.1.4/dist/videojs-overlay.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/videojs-chapters@1.0.0/dist/videojs-chapters.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/videojs-chromecast@2.4.1/dist/videojs-chromecast.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/videojs-playback-rate@1.0.0/dist/videojs-playback-rate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/videojs-share@1.0.0/dist/videojs-share.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/videojs-analytics@1.0.0/dist/videojs-analytics.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/videojs-bookmark@1.0.0/dist/videojs-bookmark.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/videojs-related@1.0.0/dist/videojs-related.min.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -183,11 +191,71 @@
             backend: 'MediaElement',
             waveColor: '#36393b',
             progressColor: '#2ebd59',
-            cursorColor: '#ffffff',
-            barWidth: 3,
-            barGap: null,
-            normalize: true,
-            responsive: true
+            cursorColor: '#ff0000',
+            interact: true,
+            hideScrollbar: true
+        });
+
+        // Overlay Plugin (optional)
+        player.overlay({
+            overlays: [{
+                content: 'Overlay text',
+                start: 'playing',
+                end: 'pause',
+                align: 'bottom-left'
+            }]
+        });
+
+        // Chapters Plugin (optional)
+        player.chapters({
+            chapters: [{
+                title: 'Introduction',
+                startTime: 0
+            }, {
+                title: 'Middle',
+                startTime: 60
+            }, {
+                title: 'End',
+                startTime: 120
+            }]
+        });
+
+        // Chromecast Plugin (optional)
+        player.chromecast();
+
+        // Playback Rate Plugin (optional)
+        player.playbackRate({
+            rates: [0.5, 1.0, 1.5, 2.0]
+        });
+
+        // Share Plugin (optional)
+        player.share({
+            url: window.location.href
+        });
+
+        // Analytics Plugin (optional)
+        player.analytics({
+            events: ['play', 'pause', 'ended']
+        });
+
+        // Bookmark Plugin (optional)
+        player.bookmark({
+            bookmarks: []
+        });
+
+        // Related Videos Plugin (optional)
+        player.related({
+            videos: [{
+                title: 'Related Video 1',
+                description: 'Description of related video 1',
+                url: 'https://related-video-url-1.m3u8',
+                poster: 'path_to_related_poster_1.jpg'
+            }, {
+                title: 'Related Video 2',
+                description: 'Description of related video 2',
+                url: 'https://related-video-url-2.m3u8',
+                poster: 'path_to_related_poster_2.jpg'
+            }]
         });
     });
 </script>
