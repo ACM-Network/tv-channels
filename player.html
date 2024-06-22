@@ -3,57 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Video Player with Video.js</title>
-    <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet">
+    <title>ACM Network Player</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css"> <!-- Plyr CSS -->
     <style>
         body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
+            text-align: center;
         }
-        .video-js {
+
+        header {
+            background-color: #222;
+            padding: 10px;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        nav {
+            margin: 10px 0;
+        }
+
+        select {
+            padding: 5px;
+            font-size: 16px;
+            width: 300px; /* Adjust the width as needed */
+        }
+
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .channel {
+            width: 200px;
+            margin: 10px;
+            cursor: pointer;
+            border: 1px solid #444;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .channel img {
             width: 100%;
-            max-width: 800px;
+            height: auto;
+            max-height: 120px;
+            object-fit: contain;
+        }
+
+        .channel h3 {
+            margin: 0;
+            padding: 10px;
+            background-color: #111;
+        }
+
+        footer {
+            background-color: #222;
+            padding: 10px;
+        }
+
+        #playerContainer {
+            position: relative;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        #player {
+            width: 100%;
+            height: auto;
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>ACM Network Player</h1>
+    </header>
 
-<video id="myVideo" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'>
-    <source id="videoSource" type="application/x-mpegURL">
-    Your browser does not support HTML5 video.
-</video>
+    <main>
+        <div id="playerContainer">
+            <video controls crossorigin playsinline id="player">
+                <source src="" type="application/x-mpegURL">
+            </video>
+        </div>
+    </main>
 
-<script src="https://vjs.zencdn.net/7.15.4/video.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var player = videojs('myVideo');
-        
-        // Function to get query parameter from URL
-        function getQueryParam(param) {
-            var queryString = window.location.search;
-            var urlParams = new URLSearchParams(queryString);
-            return urlParams.get(param);
-        }
-        
-        // Get the stream URL from query parameter
-        var streamUrl = getQueryParam('streamUrl');
-        
-        // Set the source of the video player
+    <footer>
+        <p>ACM Network &copy; 2024</p>
+    </footer>
+
+    <script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script> <!-- Plyr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script> <!-- Hls.js for HLS support -->
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const streamUrl = urlParams.get('url');
+        const videoElement = document.getElementById('player');
+
         if (streamUrl) {
-            document.getElementById('videoSource').setAttribute('src', streamUrl);
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(streamUrl);
+                hls.attachMedia(videoElement);
+                
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    videoElement.play();
+                });
+            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play();
+                });
+            } else {
+                videoElement.src = streamUrl;
+                videoElement.addEventListener('loadedmetadata', function() {
+                    videoElement.play();
+                });
+            }
         }
-        
-        // Initialize the player
-        player.ready(function() {
-            this.play(); // Autoplay if needed
-        });
-    });
-</script>
 
+        const player = new Plyr(videoElement, {
+            controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
+            settings: ['quality', 'speed', 'captions', 'audio', 'audio-track'], // Added 'audio' and 'audio-track' to settings
+            tooltips: { controls: false, seek: true },
+            displayDuration: false // Hide duration display
+        });
+
+        player.on('playing', () => {
+            console.log('Video is playing');
+        });
+
+        player.on('waiting', () => {
+            console.log('Buffering...');
+        });
+    </script>
 </body>
 </html>
