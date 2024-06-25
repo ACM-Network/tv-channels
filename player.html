@@ -3,141 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ACM Network Player</title>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.8/plyr.css"> <!-- Plyr CSS -->
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #000;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-
-        header {
-            background-color: #222;
-            padding: 10px;
-        }
-
-        h1 {
-            margin: 0;
-        }
-
-        nav {
-            margin: 10px 0;
-        }
-
-        select {
-            padding: 5px;
-            font-size: 16px;
-            width: 300px; /* Adjust the width as needed */
-        }
-
-        main {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .channel {
-            width: 200px;
-            margin: 10px;
-            cursor: pointer;
-            border: 1px solid #444;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .channel img {
-            width: 100%;
-            height: auto;
-            max-height: 120px;
-            object-fit: contain;
-        }
-
-        .channel h3 {
-            margin: 0;
-            padding: 10px;
-            background-color: #111;
-        }
-
-        footer {
-            background-color: #222;
-            padding: 10px;
-        }
-
-        #playerContainer {
-            position: relative;
-            width: 80%;
-            margin: 0 auto;
-        }
-
-        #player {
-            width: 100%;
-            height: auto;
-        }
-    </style>
+    <title>Dynamically Load HLS Channels</title>
+    <link href="https://vjs.zencdn.net/7.19.2/video-js.css" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h1>ACM Network Player</h1>
-    </header>
+    <video id="my-video" class="video-js vjs-big-play-centered vjs-theme-sea" controls preload="auto" fluid="true" poster="https://www.tutorialspoint.com/videos/sample.png" data-setup='{}'>
+        <!-- Source tags will be dynamically added here -->
+    </video>
 
-    <main>
-        <div id="playerContainer">
-            <video controls crossorigin playsinline id="player">
-                <source src="" type="application/x-mpegURL">
-            </video>
-        </div>
-    </main>
+    <script src="https://vjs.zencdn.net/7.17.0/video.min.js"></script>
+    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
 
-    <footer>
-        <p>ACM Network &copy; 2024</p>
-    </footer>
-
-    <script src="https://cdn.plyr.io/3.6.8/plyr.polyfilled.js"></script> <!-- Plyr JS -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script> <!-- Hls.js for HLS support -->
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const streamUrl = urlParams.get('url');
-        const videoElement = document.getElementById('player');
+        document.addEventListener('DOMContentLoaded', function () {
+            var player = videojs('my-video');
+            var sources = []; // Array to store dynamically fetched sources
 
-        if (streamUrl) {
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(streamUrl);
-                hls.attachMedia(videoElement);
-                
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    videoElement.play();
-                });
-            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                videoElement.src = streamUrl;
-                videoElement.addEventListener('loadedmetadata', function() {
-                    videoElement.play();
-                });
-            } else {
-                videoElement.src = streamUrl;
-                videoElement.addEventListener('loadedmetadata', function() {
-                    videoElement.play();
-                });
+            // Function to fetch HLS channel URLs
+            function fetchHLSChannels() {
+                // Replace with your logic to fetch HLS channel URLs
+                // Example: Fetch from an API endpoint
+                fetch('https://api.example.com/channels')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Assuming data is an array of channel objects with HLS URLs
+                        data.forEach(channel => {
+                            sources.push({ src: channel.hls_url, type: 'application/x-mpegURL' });
+                        });
+
+                        // Clear existing sources
+                        player.pause();
+                        player.src([]);
+
+                        // Add new sources dynamically
+                        sources.forEach(function (source) {
+                            player.src(source);
+                        });
+
+                        // Load the first source initially
+                        player.load();
+                        player.play(); // Optional: Autoplay the first channel
+                    })
+                    .catch(error => {
+                        console.error('Error fetching HLS channels:', error);
+                    });
             }
-        }
 
-        const player = new Plyr(videoElement, {
-            controls: ['play-large', 'play', 'progress', 'mute', 'volume', 'settings', 'fullscreen'],
-            settings: ['quality', 'speed', 'captions', 'audio', 'audio-track'], // Added 'audio' and 'audio-track' to settings
-            tooltips: { controls: false, seek: true },
-            displayDuration: false // Hide duration display
-        });
-
-        player.on('playing', () => {
-            console.log('Video is playing');
-        });
-
-        player.on('waiting', () => {
-            console.log('Buffering...');
+            // Call function to fetch HLS channels
+            fetchHLSChannels();
         });
     </script>
 </body>
