@@ -8,10 +8,18 @@
    <link href="https://vjs.zencdn.net/7.19.2/video-js.css" rel="stylesheet">
    <!-- Optional: Custom styles for your video player -->
    <style>
+      /* Centering the video player */
+      .video-container {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         height: 100vh; /* Full viewport height */
+         background-color: #000; /* Optional: Black background */
+      }
       .video-js {
          width: 100%; /* Full width */
+         max-width: 800px; /* Maximum width */
          height: auto; /* Maintain aspect ratio */
-         background-color: #000; /* Optional: Black background */
       }
       .vjs-big-play-button {
          font-size: 3em; /* Larger play button */
@@ -27,18 +35,33 @@
       .vjs-quality-selector:hover {
          background-color: rgba(0, 0, 0, 0.9); /* Hover background color for quality selector */
       }
+      .vjs-big-play-centered .vjs-control-text {
+         font-size: 1.2em; /* Play button text size */
+         color: #fff; /* Play button text color */
+         font-weight: bold; /* Play button text bold */
+      }
+      .vjs-playlist-item {
+         color: #fff; /* Playlist item text color */
+         background-color: rgba(0, 0, 0, 0.5); /* Playlist item background color */
+         border: 1px solid #fff; /* Playlist item border */
+      }
+      .vjs-playlist-item:hover {
+         background-color: rgba(0, 0, 0, 0.7); /* Playlist item hover background color */
+      }
    </style>
 </head>
 <body>
-   <video
-      id="my-video"
-      class="video-js vjs-big-play-centered vjs-theme-sea"
-      controls
-      preload="auto"
-      data-setup='{}'
-   >
-      <!-- No specific video sources specified here -->
-   </video>
+   <div class="video-container">
+      <video
+         id="my-video"
+         class="video-js vjs-big-play-centered vjs-theme-sea"
+         controls
+         preload="auto"
+         data-setup='{}'
+      >
+         <!-- No specific video sources specified here -->
+      </video>
+   </div>
 
    <!-- Video.js script -->
    <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
@@ -64,15 +87,12 @@
                'remainingTimeDisplay',
                'playbackRateMenuButton',
                'qualitySelector', // Quality selector button
-               'fullscreenToggle'
+               'fullscreenToggle',
+               'pictureInPictureToggle', // Picture-in-picture toggle button
+               'captionsButton', // Captions button
+               'chaptersButton', // Chapters button
+               'subtitlesButton' // Subtitles button
             ]
-         },
-         plugins: {
-            // Plugins configuration
-            httpSourceSelector: {
-               default: 'auto', // Default source selection
-               sources: [] // No specific video sources specified
-            }
          }
       });
    </script>
