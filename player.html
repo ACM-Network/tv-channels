@@ -139,29 +139,6 @@
         player.on('waiting', () => {
             console.log('Buffering...');
         });
-
-        // Function to play selected channel
-        function playChannel(channelName, hlsUrl) {
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(hlsUrl);
-                hls.attachMedia(videoElement);
-                
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    videoElement.play();
-                });
-            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                videoElement.src = hlsUrl;
-                videoElement.addEventListener('loadedmetadata', function() {
-                    videoElement.play();
-                });
-            } else {
-                videoElement.src = hlsUrl;
-                videoElement.addEventListener('loadedmetadata', function() {
-                    videoElement.play();
-                });
-            }
-        }
     </script>
 </body>
 </html>
