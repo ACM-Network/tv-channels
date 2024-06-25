@@ -35,10 +35,9 @@
       class="video-js vjs-big-play-centered vjs-theme-sea"
       controls
       preload="auto"
-      poster="https://www.tutorialspoint.com/videos/sample.png"
       data-setup='{}'
    >
-      <!-- Placeholder for video sources -->
+      <!-- No specific video sources specified here -->
    </video>
 
    <!-- Video.js script -->
@@ -72,22 +71,10 @@
             // Plugins configuration
             httpSourceSelector: {
                default: 'auto', // Default source selection
-               sources: [] // Placeholder for actual video sources
+               sources: [] // No specific video sources specified
             }
          }
       });
-
-      // Example of adding sources programmatically (replace with your actual logic)
-      var sources = [
-         { type: 'application/x-mpegURL', src: 'https://www.example.com/videos/source1.m3u8', label: 'Source 1' },
-         { type: 'application/x-mpegURL', src: 'https://www.example.com/videos/source2.m3u8', label: 'Source 2' },
-         { type: 'application/x-mpegURL', src: 'https://www.example.com/videos/source3.m3u8', label: 'Source 3' }
-         // Add more sources as needed
-      ];
-
-      // Set video sources dynamically
-      player.src(sources);
-
    </script>
 </body>
 </html>
