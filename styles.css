@@ -361,127 +361,179 @@ input[type="text"], input[type="email"], input[type="password"] {
     color: white;
 }
 
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus {
-    border: 1px solid orangered;
+input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #1a1a1a;
+    color: white;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+    border-color: orangered;
     outline: none;
     box-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
 }
 
 /* Form styles */
 form {
-    background-color: #1a1a1a;
+    background-color: #282828;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     max-width: 400px;
-    margin: 20px auto;
-}
-
-/* Table styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-}
-
-table, th, td {
-    border: 1px solid #444;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    background-color: #2a2a2a;
-}
-
-th {
-    background-color: #444;
-}
-
-/* Tooltip styles */
-.tooltip {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-}
-
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
-    
-    position: absolute;
-    z-index: 1;
-    bottom: 125%; /* Position above the tooltip element */
-    left: 50%;
-    margin-left: -60px;
-
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* Modal styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: #1a1a1a;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    max-width: 500px;
     margin: auto;
 }
 
-.modal-close {
+label {
+    margin-bottom: 10px;
+    display: block;
+    font-size: 14px;
+}
+
+/* Navbar toggle button */
+.nav-toggle {
+    display: none;
+}
+
+@media (max-width: 800px) {
+    .nav-toggle {
+        display: block;
+        background-color: orangered;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        font-size: 18px;
+    }
+
+    .header .links {
+        display: none;
+        flex-direction: column;
+        background-color: rgb(38, 33, 42);
+        width: 100%;
+        padding: 0;
+    }
+
+    .header .links.active {
+        display: flex;
+    }
+}
+
+/* Smooth scroll for links */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Scroll to top button */
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: orangered;
     color: white;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.modal-close:hover,
-.modal-close:focus {
-    color: orangered;
-    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    display: none;
+    z-index: 1000;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-/* Scrollbar styles */
-::-webkit-scrollbar {
-    width: 10px;
+.scroll-to-top:hover {
+    background-color: darkorange;
 }
 
-::-webkit-scrollbar-track {
-    background: #1a1a1a;
+.scroll-to-top.show {
+    display: block;
 }
 
-::-webkit-scrollbar-thumb {
-    background: orangered;
+/* Dark mode switch */
+.dark-mode-switch {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #444;
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: darkorange;
+.dark-mode-switch:hover {
+    background-color: #666;
 }
+
+/* Dark mode styles */
+body.dark-mode {
+    background-color: #000;
+    color: #fff;
+}
+
+body.dark-mode header {
+    background-color: #333;
+}
+
+body.dark-mode .channel {
+    border-color: #555;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .channel:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode footer {
+    background-color: #111;
+}
+
+body.dark-mode form {
+    background-color: #222;
+}
+
+body.dark-mode input[type="text"], 
+body.dark-mode input[type="email"], 
+body.dark-mode input[type="password"] {
+    background-color: #333;
+    border-color: #444;
+}
+
+body.dark-mode input[type="text"]:focus, 
+body.dark-mode input[type="email"]:focus, 
+body.dark-mode input[type="password"]:focus {
+    border-color: orangered;
+}
+
+body.dark-mode .scroll-to-top {
+    background-color: #444;
+}
+
+body.dark-mode .scroll-to-top:hover {
+    background-color: #666;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+    .channel {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    form {
+        padding: 10px;
+    }
+
+    .header .links {
+        padding-right: 0;
+    }
+
+    .header .brand h3 {
+        font-size: 24px;
+    }
+        }
