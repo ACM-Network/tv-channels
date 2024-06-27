@@ -10,17 +10,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    overflow: hidden; /* Prevent overflow */
-}
-
-/* Scrollbar removal */
-body::-webkit-scrollbar {
-    display: none;
-}
-
-body {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
 header {
@@ -45,7 +35,6 @@ header {
     color: white;
     font-size: 28px;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    animation: fadeInSlideDown 2s ease-in-out, colorChange 3s infinite;
 }
 
 .header .links {
@@ -102,105 +91,196 @@ main {
     overflow-y: auto;
 }
 
-/* Responsive grid layout */
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
-
-.grid-item {
-    background-color: #333;
-    padding: 20px;
+/* Channel cards */
+.channel {
+    width: 240px;
+    margin: 20px;
+    cursor: pointer;
+    border: 1px solid #444;
     border-radius: 10px;
+    overflow: hidden;
+    position: relative;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.grid-item:hover {
+.channel:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
-/* Ensure logos have uniform size and margin */
-.grid-item img {
+.channel img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+}
+
+.channel .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120px;
+    overflow: hidden;
+}
+
+.channel .logo-container img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    margin: auto;
+    border-radius: 50%;
 }
 
-/* Tooltips */
-.tooltip {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-}
-
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: #555;
-    color: #fff;
+.channel h3 {
+    margin: 0;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    font-size: 18px;
     text-align: center;
-    border-radius: 5px;
-    padding: 5px 0;
+    text-transform: uppercase;
+    border-radius: 0 0 10px 10px;
+}
+
+/* Play button overlay */
+.channel .play-button {
     position: absolute;
-    z-index: 1;
-    bottom: 125%; /* Position the tooltip above the text */
+    top: 50%;
     left: 50%;
-    margin-left: -60px;
-    opacity: 0;
-    transition: opacity 0.3s;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 2;
+    display: none;
 }
 
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
+.channel:hover .play-button {
+    display: block;
 }
 
-/* Modal window */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
+.channel .play-button:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Card overlay for additional information */
+.channel .overlay {
+    position: absolute;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0); /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-}
-
-.modal-content {
-    background-color: #222;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
     border-radius: 10px;
 }
 
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+.channel:hover .overlay {
+    opacity: 1;
 }
 
-.close:hover,
-.close:focus {
+.channel .overlay-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.channel .overlay-content h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.channel .overlay-content p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Footer */
+footer {
+    background-color: #222;
+    padding: 10px;
+    position: relative;
+    width: 100%;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+footer a {
     color: #fff;
     text-decoration: none;
-    cursor: pointer;
+    transition: color 0.3s ease;
 }
 
-/* Animations */
+footer a:hover {
+    color: #888;
+}
+
+/* Video player container */
+#playerContainer {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0 auto;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    background-color: #000;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+#player {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+}
+
+.plyr__controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+/* Additional features */
+.channel:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
+    z-index: 1;
+    border-radius: 10px;
+}
+
+.channel:before {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.channel:hover:before {
+    opacity: 1;
+}
+
+@media (hover: hover) {
+    .channel {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -212,7 +292,7 @@ main {
     }
 }
 
-.grid-item {
+.channel {
     animation: fadeIn 0.5s ease-out forwards;
 }
 
@@ -228,41 +308,6 @@ main {
     }
 }
 
-/* Additional animations for website name */
-@keyframes colorChange {
-    0% {
-        color: orangered;
-    }
-    25% {
-        color: #ff6347;
-    }
-    50% {
-        color: #ffd700;
-    }
-    75% {
-        color: #32cd32;
-    }
-    100% {
-        color: orangered;
-    }
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-    }
-    40% {
-        transform: translateY(-30px);
-    }
-    60% {
-        transform: translateY(-15px);
-    }
-}
-
-header .brand h3 {
-    animation: fadeInSlideDown 2s ease-in-out, colorChange 3s infinite, bounce 2s infinite;
-}
-
 header h1 {
     animation: fadeInSlideDown 2s ease-in-out;
 }
@@ -270,191 +315,4 @@ header h1 {
 /* Avoid horizontal scrolling */
 body {
     overflow-x: hidden;
-}
-
-/* Additional hover effects for links */
-.header .links a:focus,
-.header .links a:active {
-    color: orangered;
-}
-
-/* Button styles */
-button {
-    background-color: orangered;
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: darkorange;
-}
-
-button:focus {
-    outline: none;
-    box-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
-}
-
-/* Input styles */
-input[type="text"], input[type="email"], input[type="password"] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    background-color: #1a1a1a;
-    color: white;
-}
-
-input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
-    border-color: orangered;
-    outline: none;
-    box-shadow: 0 0 5px rgba(255, 69, 0, 0.5);
-}
-
-/* Form styles */
-form {
-    background-color: #282828;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
-    margin: auto;
-}
-
-label {
-    margin-bottom: 10px;
-    display: block;
-    font-size: 14px;
-}
-
-/* Navbar toggle button */
-.nav-toggle {
-    display: none;
-}
-
-@media (max-width: 800px) {
-    .nav-toggle {
-        display: block;
-        background-color: orangered;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-        border: none;
-        font-size: 18px;
-    }
-
-    .header .links {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        margin-top: 1rem;
-        padding: 0;
-    }
-
-    .header .links a {
-        display: block;
-        width: 100%;
-        text-align: center;
-        padding: 10px 0;
-        margin: 0;
-    }
-
-    .header #menuimg {
-        display: block;
-        width: 35%;
-        margin-right: 2rem;
-    }
-}
-
-.nav-toggle:checked + .header .links {
-    display: flex;
-}
-
-/* Flexbox layout for the header */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Flexbox layout for the brand */
-.header .brand {
-    display: flex;
-    align-items:center;
-}
-
-/* Adding some padding to the brand for better alignment */
-.header .brand {
-    padding: 0.5rem;
-}
-
-/* Responsive grid layout for main content */
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* Ensuring grid items are consistently sized and centered */
-.grid-item {
-    background-color: #333;
-    padding: 20px;
-    border-radius: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-width: 240px;
-    margin: auto;
-}
-
-.grid-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-/* Ensuring logos have uniform size and margin */
-.grid-item img {
-    max-width: 100%;
-    max-height: 100px; /* Adjust this value based on desired logo height */
-    object-fit: contain;
-    margin: auto;
-    padding: 10px; /* Adds padding around the image to ensure uniform spacing */
-    box-sizing: border-box;
-}
-
-/* Responsive design adjustments */
-@media (max-width: 600px) {
-    .grid-container {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    }
-
-    .grid-item {
-        max-width: 180px;
-    }
-}
-
-/* Responsive design for smaller devices */
-@media (max-width: 400px) {
-    .grid-container {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-
-    .grid-item {
-        max-width: 150px;
-    }
 }
